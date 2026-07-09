@@ -1,0 +1,33 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# node
+node_modules/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# build / coverage
+coverage/
+htmlcov/
+.coverage
+*.log
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+
+# local infra
+infra/local/volumes/
+localstack-volume/
