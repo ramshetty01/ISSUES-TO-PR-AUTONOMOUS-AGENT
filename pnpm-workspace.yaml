@@ -1,0 +1,3 @@
+# Workspace members are added phase by phase as each package/app is implemented.
+packages:
+  - "packages/shared-types"
