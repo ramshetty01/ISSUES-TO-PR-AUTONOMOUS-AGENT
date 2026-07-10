@@ -1,0 +1,23 @@
+{
+  "_comment": "Example GitHub App manifest for the create-from-manifest flow used by scripts/setup-github-app.sh. Permissions are least-privilege and match docs/github-app-permissions.md. Replace url/webhook fields with your own; set hook_attributes.url to your SMEE_URL in local dev (scripts/setup-smee.sh).",
+  "name": "itpr-agent",
+  "url": "https://github.com/acme/issue-to-pr-agent",
+  "hook_attributes": {
+    "url": "https://smee.io/REPLACE_WITH_YOUR_CHANNEL",
+    "active": true
+  },
+  "redirect_url": "http://localhost:3001/apps/created",
+  "public": false,
+  "default_events": [
+    "issues",
+    "issue_comment",
+    "pull_request"
+  ],
+  "default_permissions": {
+    "contents": "write",
+    "issues": "write",
+    "pull_requests": "write",
+    "metadata": "read",
+    "administration": "read"
+  }
+}

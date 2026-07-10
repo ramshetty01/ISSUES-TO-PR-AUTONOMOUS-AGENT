@@ -2,6 +2,9 @@ import { BudgetCard } from "../../../../components/BudgetCard.js";
 import { CostChart } from "../../../../components/CostChart.js";
 import { api } from "../../../../lib/api.js";
 
+// Backed by a runtime API; render per-request rather than prerendering at build.
+export const dynamic = "force-dynamic";
+
 /** Per-repo view: budget window + spend ledger. */
 export default async function RepoPage({
   params,
