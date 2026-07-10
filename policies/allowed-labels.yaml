@@ -1,0 +1,3 @@
+# Labels that trigger the agent. An issue must carry one of these to be processed.
+labels:
+  - agent-fix

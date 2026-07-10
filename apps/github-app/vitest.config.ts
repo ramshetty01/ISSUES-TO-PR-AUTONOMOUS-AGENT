@@ -8,6 +8,7 @@ export default defineConfig({
       "tests/server.test.ts",
       "tests/webhook-verifier.test.ts",
       "tests/github-helpers.test.ts",
+      "tests/filters.test.ts",
     ],
   },
 });
