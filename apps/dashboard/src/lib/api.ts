@@ -11,6 +11,7 @@ import type {
   RepoRef,
   RunSummary,
 } from "@itpr/shared-types";
+import type { RateLimitState } from "../components/RateLimitBanner.js";
 
 export interface ApiClientOptions {
   baseUrl?: string;
@@ -77,6 +78,15 @@ export class ApiClient {
 
   listRepos(): Promise<RepoRef[]> {
     return this.get<RepoRef[]>("/api/repos");
+  }
+
+  /** Current free-tier rate-limit status; falls back to "clear" if unavailable. */
+  async getRateLimit(): Promise<RateLimitState> {
+    try {
+      return await this.get<RateLimitState>("/api/rate-limit");
+    } catch {
+      return { throttled: false };
+    }
   }
 }
 

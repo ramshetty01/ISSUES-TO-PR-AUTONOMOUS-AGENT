@@ -4,15 +4,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the data-access layer; pages consume the shared `api` singleton.
 // `vi.hoisted` runs before the hoisted vi.mock factory, so these are safe to reference.
-const { listRuns, getRun, listBudgets, getRepoBudget, listRepoLedger } = vi.hoisted(() => ({
-  listRuns: vi.fn(),
-  getRun: vi.fn(),
-  listBudgets: vi.fn(),
-  getRepoBudget: vi.fn(),
-  listRepoLedger: vi.fn(),
-}));
+const { listRuns, getRun, listBudgets, getRepoBudget, listRepoLedger, getRateLimit } =
+  vi.hoisted(() => ({
+    listRuns: vi.fn(),
+    getRun: vi.fn(),
+    listBudgets: vi.fn(),
+    getRepoBudget: vi.fn(),
+    listRepoLedger: vi.fn(),
+    getRateLimit: vi.fn(),
+  }));
 vi.mock("../src/lib/api.js", () => ({
-  api: { listRuns, getRun, listBudgets, getRepoBudget, listRepoLedger },
+  api: { listRuns, getRun, listBudgets, getRepoBudget, listRepoLedger, getRateLimit },
 }));
 
 import BudgetsPage from "../src/app/budgets/page.js";
@@ -69,8 +71,16 @@ beforeEach(() => vi.clearAllMocks());
 describe("HomePage", () => {
   it("lists recent runs linking to detail", async () => {
     listRuns.mockResolvedValue([run]);
+    getRateLimit.mockResolvedValue({ throttled: false });
     render(await HomePage());
     expect(screen.getByRole("link", { name: "run-1" })).toHaveAttribute("href", "/runs/run-1");
+  });
+
+  it("surfaces a rate-limit banner when a provider is throttled", async () => {
+    listRuns.mockResolvedValue([]);
+    getRateLimit.mockResolvedValue({ throttled: true, provider: "groq" });
+    render(await HomePage());
+    expect(screen.getByRole("alert")).toHaveTextContent(/groq.*rate limit/i);
   });
 });
 

@@ -1,14 +1,18 @@
 /**
- * Express server for the GitHub App. Captures the raw request body (needed for
- * HMAC webhook verification in a later phase), attaches a per-request context,
- * and mounts the health + webhook routes.
+ * Minimal Express server for the GitHub App: captures the raw request body (for
+ * HMAC signature verification), attaches a per-request context, and mounts the
+ * health + webhook routes with a caller-supplied handler.
+ *
+ * The production entrypoint (`index.ts`) composes the full verified pipeline via
+ * `createWebhookRouter`; this thinner `createServer` is the injectable surface
+ * used in tests and simple embeddings.
  */
 import express, { type Express, type Request } from "express";
 import { healthRouter } from "./routes/health.js";
 import { withRequestContext } from "./logging/request-context.js";
 import { logger } from "./logging/logger.js";
 
-/** A stub webhook sink; the real routing/verification lands in later phases. */
+/** Sink for a received webhook. `index.ts` supplies the verified pipeline. */
 export type WebhookSink = (args: {
   event: string;
   deliveryId: string;
