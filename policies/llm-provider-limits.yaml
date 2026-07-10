@@ -1,0 +1,18 @@
+# Per-provider rate limits for free tiers (requests + tokens per minute).
+# 0 = unlimited. Tune to each provider's published free-tier caps.
+providers:
+  nvidia_nim:
+    rpm: 40
+    tpm: 60000
+  gemini:
+    rpm: 15
+    tpm: 1000000
+  groq:
+    rpm: 30
+    tpm: 6000
+  ollama:
+    rpm: 0
+    tpm: 0
+  mock:
+    rpm: 0
+    tpm: 0
