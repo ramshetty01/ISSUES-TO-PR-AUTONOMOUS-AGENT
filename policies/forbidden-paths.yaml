@@ -1,0 +1,8 @@
+# Paths the agent must never modify. A change touching any of these is rejected
+# by the verification gate and the safety layer.
+forbidden:
+  - .github/workflows/
+  - .github/actions/
+  - .git/
+  - .env
+  - secrets/
