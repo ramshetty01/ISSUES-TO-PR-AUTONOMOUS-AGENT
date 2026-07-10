@@ -10,6 +10,7 @@ export default defineConfig({
       "tests/branch-protection-check.test.ts",
       "tests/retry-policy.test.ts",
       "tests/runner.test.ts",
+      "tests/dispatcher.test.ts",
     ],
   },
 });
