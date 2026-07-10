@@ -24,8 +24,10 @@ RUN chmod +x entrypoint.sh
 
 ENV PYTHONPATH=/app/src
 
-# Run as a non-root user.
-RUN useradd --create-home --uid 10001 worker
+# Run as a non-root user; give it a writable workspace jail root.
+RUN useradd --create-home --uid 10001 worker \
+    && mkdir -p /workspace \
+    && chown worker:worker /workspace
 USER worker
 
 ENTRYPOINT ["/app/entrypoint.sh"]
