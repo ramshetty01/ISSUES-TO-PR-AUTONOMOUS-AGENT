@@ -29,3 +29,7 @@ class VerificationFailed(WorkerError):
 
 class LLMError(WorkerError):
     """Raised when every configured LLM provider fails."""
+
+
+class StorageError(WorkerError):
+    """Raised when an artifact store operation fails (e.g. missing key)."""
