@@ -3,7 +3,9 @@ export { createApp, type GhRest, type Repo, type BranchProtectionApi } from "./a
 export {
   getInstallationToken,
   installationClient,
+  getInstallationPermissions,
   type InstallationToken,
+  type PermissionLevel,
 } from "./auth.js";
 export { listInstallations, type Installation } from "./installations.js";
 export { getRepo, getDefaultBranch } from "./repos.js";

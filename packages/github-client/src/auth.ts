@@ -34,3 +34,18 @@ export async function installationClient(
   // which structurally satisfies our GhRest subset.
   return new Octokit({ auth: token }).rest as unknown as GhRest;
 }
+
+/** Access levels a GitHub App installation can grant per scope. */
+export type PermissionLevel = "read" | "write" | "admin";
+
+/** Fetch the permissions granted to an installation (scope -> level). */
+export async function getInstallationPermissions(
+  app: App,
+  installationId: number,
+): Promise<Record<string, PermissionLevel>> {
+  const res = await app.octokit.request(
+    "GET /app/installations/{installation_id}",
+    { installation_id: installationId },
+  );
+  return (res.data.permissions ?? {}) as Record<string, PermissionLevel>;
+}

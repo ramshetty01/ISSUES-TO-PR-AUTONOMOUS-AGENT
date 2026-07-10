@@ -7,7 +7,12 @@ import { isAllowedRepo } from "../filters/repo-allowlist.js";
 import { isAllowedActor } from "../filters/actor-filter.js";
 import { buildJob } from "../queue/job-payload.js";
 import { logger } from "../logging/logger.js";
-import type { HandlerDeps, HandlerResult } from "./issue-labeled.handler.js";
+import {
+  permissionGate,
+  tryAck,
+  type HandlerDeps,
+  type HandlerResult,
+} from "./issue-labeled.handler.js";
 
 const DEFAULT_COMMAND = "/agent";
 
@@ -45,7 +50,11 @@ export async function handlePrComment(
     labels: [],
     ...(deps.now ? { now: deps.now } : {}),
   });
+  const denied = await permissionGate(job, deps);
+  if (denied) return denied;
+
   const messageId = await deps.enqueuer.enqueue(job);
   logger.info("pr comment enqueued", { jobId: job.id, messageId });
+  await tryAck(job, "On it — the agent is working on this request.", deps);
   return { action: "enqueued", jobId: job.id, messageId };
 }

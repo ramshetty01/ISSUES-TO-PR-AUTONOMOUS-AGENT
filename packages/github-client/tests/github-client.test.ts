@@ -3,6 +3,7 @@ import type { App } from "@octokit/app";
 import {
   getInstallationToken,
   installationClient,
+  getInstallationPermissions,
   createIssueComment,
   getBranchProtection,
   getBranchProtectionSafe,
@@ -33,6 +34,19 @@ describe("auth", () => {
     const tok = await getInstallationToken(app, 99);
     expect(app.getInstallationOctokit).toHaveBeenCalledWith(99);
     expect(tok).toEqual({ token: "ghs_abc", expiresAt: "2026-07-09T01:00:00Z" });
+  });
+
+  it("fetches installation permissions via the app octokit", async () => {
+    const request = vi.fn().mockResolvedValue({
+      data: { permissions: { issues: "write", contents: "read" } },
+    });
+    const app = { octokit: { request } } as unknown as App;
+    const perms = await getInstallationPermissions(app, 7);
+    expect(request).toHaveBeenCalledWith(
+      "GET /app/installations/{installation_id}",
+      { installation_id: 7 },
+    );
+    expect(perms).toEqual({ issues: "write", contents: "read" });
   });
 
   it("returns an installation-scoped rest client built from the token", async () => {

@@ -1,7 +1,7 @@
 /**
  * Handle an issues.labeled event: apply filters, then build + enqueue a Job.
  */
-import type { IssueLabeledEvent, AllowlistEntry } from "@itpr/shared-types";
+import type { IssueLabeledEvent, AllowlistEntry, Job } from "@itpr/shared-types";
 import { matchesTriggerLabel } from "../filters/label-filter.js";
 import { isAllowedRepo } from "../filters/repo-allowlist.js";
 import { isAllowedActor, type ActorPolicy } from "../filters/actor-filter.js";
@@ -10,8 +10,19 @@ import { logger } from "../logging/logger.js";
 
 /** Anything that can enqueue a Job (JobEnqueuer or a mock). */
 export interface Enqueuer {
-  enqueue: (job: import("@itpr/shared-types").Job) => Promise<string>;
+  enqueue: (job: Job) => Promise<string>;
 }
+
+/** Verifies the installation has the scopes the agent needs. */
+export type PermissionChecker = (
+  job: Job,
+) => Promise<{ ok: boolean; missing?: string[] }>;
+
+/** Posts an acknowledgement on the triggering issue/PR (best-effort). */
+export type Acker = (args: {
+  job: Job;
+  message: string;
+}) => Promise<void>;
 
 export interface FilterConfig {
   allowedLabels: string[];
@@ -25,6 +36,36 @@ export interface HandlerDeps {
   enqueuer: Enqueuer;
   filters: FilterConfig;
   now?: () => Date;
+  /** Optional installation permission gate. */
+  checkPermissions?: PermissionChecker;
+  /** Optional ack poster; failures are logged, not fatal. */
+  ack?: Acker;
+}
+
+/** Run the optional permission gate; returns a skip result if it fails. */
+export async function permissionGate(
+  job: Job,
+  deps: HandlerDeps,
+): Promise<HandlerResult | undefined> {
+  if (!deps.checkPermissions) return undefined;
+  const res = await deps.checkPermissions(job);
+  if (!res.ok) {
+    return {
+      action: "skipped",
+      reason: `missing permissions: ${(res.missing ?? []).join(", ")}`,
+    };
+  }
+  return undefined;
+}
+
+/** Post an ack, swallowing errors (never block enqueue on a failed comment). */
+export async function tryAck(job: Job, message: string, deps: HandlerDeps): Promise<void> {
+  if (!deps.ack) return;
+  try {
+    await deps.ack({ job, message });
+  } catch (err) {
+    logger.warn("ack failed", { jobId: job.id, error: String(err) });
+  }
 }
 
 export type HandlerResult =
@@ -56,7 +97,12 @@ export async function handleIssueLabeled(
     labels: event.labels,
     ...(deps.now ? { now: deps.now } : {}),
   });
+
+  const denied = await permissionGate(job, deps);
+  if (denied) return denied;
+
   const messageId = await deps.enqueuer.enqueue(job);
   logger.info("issue enqueued", { jobId: job.id, messageId });
+  await tryAck(job, "On it — the agent is working on this issue.", deps);
   return { action: "enqueued", jobId: job.id, messageId };
 }

@@ -23,6 +23,10 @@ import {
   evaluateRepoProtection,
   loadRequiredProtection,
 } from "./repo-policy/branch-protection-check.js";
+import {
+  loadRetryPolicy,
+  nextDelayMs,
+} from "./repo-policy/retry-policy.js";
 import { runDockerWorker } from "./runner/run-docker-worker.js";
 import { Dispatcher } from "./dispatcher.js";
 import { Poller } from "./poller.js";
@@ -46,6 +50,7 @@ async function main(): Promise<void> {
   const required = loadRequiredProtection(
     resolve(POLICIES, "branch-protection-required.yaml"),
   );
+  const retry = loadRetryPolicy(resolve(POLICIES, "retry-policy.yaml"));
 
   const dispatcher = new Dispatcher({
     checkBudget: (job) => budgetService.checkAndReserve(job),
@@ -68,7 +73,13 @@ async function main(): Promise<void> {
       return handle.done;
     },
     ack: (r) => ackMessage(sqs, dcfg.queueUrl, r.receiptHandle),
-    nack: (r) => nackMessage(sqs, dcfg.queueUrl, r.receiptHandle, 0),
+    nack: (r) =>
+      nackMessage(
+        sqs,
+        dcfg.queueUrl,
+        r.receiptHandle,
+        Math.round(nextDelayMs(r.receiveCount, retry) / 1000),
+      ),
     deadLetter: (r, reason) =>
       routeToDeadLetter(sqs, {
         dlqUrl: dcfg.dlqUrl,
