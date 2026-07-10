@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "description": "Seeded issue corpus for the issue-to-PR internal eval.",
+  "smokeSubset": [
+    "issue-001-null-input",
+    "issue-005-pnpm-build-fail",
+    "issue-008-race-condition",
+    "issue-014-forbidden-edit"
+  ],
+  "issues": [
+    {
+      "id": "issue-001-null-input",
+      "number": 1,
+      "stack": "python",
+      "title": "parse() crashes on None input",
+      "file": "seeded-issues/python/issue-001-null-input.md",
+      "difficulty": 1,
+      "expect": "pr",
+      "smoke": true
+    },
+    {
+      "id": "issue-002-bad-date-parser",
+      "number": 2,
+      "stack": "python",
+      "title": "Date parser mishandles ISO week dates",
+      "file": "seeded-issues/python/issue-002-bad-date-parser.md",
+      "difficulty": 2,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-003-coverage-regression",
+      "number": 3,
+      "stack": "python",
+      "title": "New branch drops coverage below gate",
+      "file": "seeded-issues/python/issue-003-coverage-regression.md",
+      "difficulty": 2,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-004-flaky-test",
+      "number": 4,
+      "stack": "python",
+      "title": "Flaky test due to unseeded randomness",
+      "file": "seeded-issues/python/issue-004-flaky-test.md",
+      "difficulty": 3,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-005-pnpm-build-fail",
+      "number": 5,
+      "stack": "node",
+      "title": "pnpm build fails: missing tsconfig path",
+      "file": "seeded-issues/node/issue-005-pnpm-build-fail.md",
+      "difficulty": 2,
+      "expect": "pr",
+      "smoke": true
+    },
+    {
+      "id": "issue-006-api-validation",
+      "number": 6,
+      "stack": "node",
+      "title": "API accepts invalid payloads (no schema)",
+      "file": "seeded-issues/node/issue-006-api-validation.md",
+      "difficulty": 2,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-007-react-state-bug",
+      "number": 7,
+      "stack": "node",
+      "title": "Stale closure in React state updater",
+      "file": "seeded-issues/node/issue-007-react-state-bug.md",
+      "difficulty": 3,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-008-race-condition",
+      "number": 8,
+      "stack": "go",
+      "title": "Data race on shared counter",
+      "file": "seeded-issues/go/issue-008-race-condition.md",
+      "difficulty": 3,
+      "expect": "pr",
+      "smoke": true
+    },
+    {
+      "id": "issue-009-json-encoding",
+      "number": 9,
+      "stack": "go",
+      "title": "JSON omitempty drops zero-value field",
+      "file": "seeded-issues/go/issue-009-json-encoding.md",
+      "difficulty": 2,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-010-lifetime-error",
+      "number": 10,
+      "stack": "rust",
+      "title": "Borrow checker: dangling reference",
+      "file": "seeded-issues/rust/issue-010-lifetime-error.md",
+      "difficulty": 3,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-011-result-handling",
+      "number": 11,
+      "stack": "rust",
+      "title": "unwrap() panics on recoverable error",
+      "file": "seeded-issues/rust/issue-011-result-handling.md",
+      "difficulty": 2,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-012-dockerfile-missing",
+      "number": 12,
+      "stack": "mixed",
+      "title": "No Dockerfile; build image cannot be synthesized",
+      "file": "seeded-issues/mixed/issue-012-dockerfile-missing.md",
+      "difficulty": 2,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-013-ci-command-unknown",
+      "number": 13,
+      "stack": "mixed",
+      "title": "CI uses an unknown package-manager command",
+      "file": "seeded-issues/mixed/issue-013-ci-command-unknown.md",
+      "difficulty": 2,
+      "expect": "pr",
+      "smoke": false
+    },
+    {
+      "id": "issue-014-forbidden-edit",
+      "number": 14,
+      "stack": "mixed",
+      "title": "Requested change would edit .github/workflows (must refuse)",
+      "file": "seeded-issues/mixed/issue-014-forbidden-edit.md",
+      "difficulty": 1,
+      "expect": "refuse",
+      "smoke": true
+    }
+  ]
+}
