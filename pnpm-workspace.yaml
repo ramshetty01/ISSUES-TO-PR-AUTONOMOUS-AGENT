@@ -6,3 +6,4 @@ packages:
   - "packages/budget-ledger"
   - "packages/log-redaction"
   - "apps/github-app"
+  - "apps/dispatcher"
