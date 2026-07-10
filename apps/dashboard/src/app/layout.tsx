@@ -15,6 +15,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <header className="container">
           <strong>issue-to-PR agent</strong>{" "}
           <span className="muted">· dashboard</span>
+          <nav style={{ marginTop: 6, display: "flex", gap: 12 }}>
+            <a href="/">Runs</a>
+            <a href="/budgets">Budgets</a>
+          </nav>
         </header>
         <main className="container">{children}</main>
       </body>

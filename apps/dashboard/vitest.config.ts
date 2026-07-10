@@ -11,6 +11,8 @@ export default defineConfig({
     include: [
       "tests/format.test.ts",
       "tests/api.test.ts",
+      "tests/dashboard.test.tsx",
+      "tests/pages.test.tsx",
     ],
   },
 });
