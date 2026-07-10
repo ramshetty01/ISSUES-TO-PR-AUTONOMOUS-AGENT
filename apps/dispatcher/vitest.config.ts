@@ -9,6 +9,7 @@ export default defineConfig({
       "tests/budget-service.test.ts",
       "tests/branch-protection-check.test.ts",
       "tests/retry-policy.test.ts",
+      "tests/runner.test.ts",
     ],
   },
 });
