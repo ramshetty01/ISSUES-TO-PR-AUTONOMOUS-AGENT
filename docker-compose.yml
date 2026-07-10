@@ -1,0 +1,88 @@
+# ---------------------------------------------------------------------------
+# Full local stack: the $0 infra backbone (LocalStack + Postgres + Langfuse)
+# plus the two Node app services (github-app webhook receiver + dispatcher).
+#
+#   make up      # boot everything
+#   make seed    # provision + seed queues
+#   make down    # tear down
+#
+# The infra services (localstack, postgres, langfuse) are pulled in verbatim
+# from infra/local/docker-compose.local.yml via `include`, so there is a
+# single source of truth for the backbone.
+#
+# NOTE on endpoints: packages/config/src/defaults.ts targets the HOST view
+# (http://localhost:4566, http://localhost:3000). Inside this compose network
+# the app containers reach the same services by their compose service names
+# (localstack, langfuse), so the in-container overrides below swap `localhost`
+# for the service hostname. The AWS *resource* names (itpr-jobs, itpr-jobs-dlq,
+# itpr-budget-ledger, itpr-artifacts) are identical to the config defaults.
+# ---------------------------------------------------------------------------
+
+name: itpr
+
+include:
+  - infra/local/docker-compose.local.yml
+
+services:
+  github-app:
+    build:
+      context: .
+      dockerfile: apps/github-app/Dockerfile
+    container_name: itpr-github-app
+    depends_on:
+      localstack:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      PORT: "3001"
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      SQS_QUEUE_URL: http://localstack:4566/000000000000/itpr-jobs
+      SQS_DLQ_URL: http://localstack:4566/000000000000/itpr-jobs-dlq
+      LANGFUSE_HOST: http://langfuse:3000
+      # Real secrets come from the host .env (not committed).
+      GITHUB_APP_ID: ${GITHUB_APP_ID:-}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:-}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+    restart: unless-stopped
+    networks:
+      - itpr-local
+
+  dispatcher:
+    build:
+      context: .
+      dockerfile: apps/dispatcher/Dockerfile
+    container_name: itpr-dispatcher
+    depends_on:
+      localstack:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      SQS_QUEUE_URL: http://localstack:4566/000000000000/itpr-jobs
+      SQS_DLQ_URL: http://localstack:4566/000000000000/itpr-jobs-dlq
+      DYNAMODB_BUDGET_TABLE: itpr-budget-ledger
+      S3_ARTIFACTS_BUCKET: itpr-artifacts
+      LANGFUSE_HOST: http://langfuse:3000
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://host.docker.internal:11434}
+      GITHUB_APP_ID: ${GITHUB_APP_ID:-}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+    volumes:
+      # Dispatcher spawns the worker container via the host Docker daemon.
+      - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    networks:
+      - itpr-local
