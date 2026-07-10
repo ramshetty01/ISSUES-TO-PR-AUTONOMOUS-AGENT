@@ -1,0 +1,10 @@
+# Conditions that cause an immediate, non-negotiable refusal.
+hard_rejects:
+  - editing CI workflow files (.github/workflows/**)
+  - force pushing or pushing to a protected branch
+  - committing a detected secret or private key
+  - running a command on the denylist
+  - writing outside the workspace jail
+protected_branches:
+  - main
+  - master
