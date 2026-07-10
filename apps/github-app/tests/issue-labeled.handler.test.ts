@@ -66,4 +66,29 @@ describe("handleIssueLabeled", () => {
     );
     expect(res).toMatchObject({ action: "skipped", reason: "actor not permitted" });
   });
+
+  it("skips when the installation lacks required permissions (no enqueue)", async () => {
+    const { deps: d, enqueue } = deps();
+    d.checkPermissions = vi
+      .fn()
+      .mockResolvedValue({ ok: false, missing: ["pull_requests"] });
+    const res = await handleIssueLabeled(baseEvent, d);
+    expect(res).toMatchObject({ action: "skipped" });
+    expect((res as { reason: string }).reason).toContain("pull_requests");
+    expect(enqueue).not.toHaveBeenCalled();
+  });
+
+  it("posts an ack after enqueue and does not fail if ack throws", async () => {
+    const ack = vi.fn().mockResolvedValue(undefined);
+    const { deps: d } = deps();
+    d.ack = ack;
+    const res = await handleIssueLabeled(baseEvent, d);
+    expect(res.action).toBe("enqueued");
+    expect(ack).toHaveBeenCalledOnce();
+
+    const throwing = deps();
+    throwing.deps.ack = vi.fn().mockRejectedValue(new Error("comment failed"));
+    const res2 = await handleIssueLabeled(baseEvent, throwing.deps);
+    expect(res2.action).toBe("enqueued"); // ack failure is non-fatal
+  });
 });
