@@ -1,0 +1,6 @@
+# Synthesized for a Java repo (gradle).
+FROM gradle:8.8-jdk21
+WORKDIR /app
+COPY . .
+RUN gradle --no-daemon dependencies || true
+CMD ["sh", "-c", "{{ test_command }}"]

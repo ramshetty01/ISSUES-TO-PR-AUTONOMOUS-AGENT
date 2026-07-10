@@ -1,0 +1,7 @@
+# Fallback image for an unrecognized stack — best-effort, no dependency install.
+FROM debian:bookworm-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends git ripgrep \
+    && rm -rf /var/lib/apt/lists/*
+COPY . .
+CMD ["sh", "-c", "{{ test_command }}"]
