@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@itpr/config": "workspace:*",
+    "@itpr/github-client": "workspace:*",
     "@itpr/shared-types": "workspace:*",
+    "@octokit/app": "^15.1.0",
     "express": "^4.19.2",
     "smee-client": "^2.0.4"
   },
