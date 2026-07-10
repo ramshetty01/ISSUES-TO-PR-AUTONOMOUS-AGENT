@@ -1,8 +1,10 @@
-/** Minimal structured JSON logger for the dispatcher. */
+/** Minimal structured JSON logger for the dispatcher. Every line is redacted. */
+import { redact } from "@itpr/log-redaction";
+
 export type Level = "debug" | "info" | "warn" | "error";
 
 function emit(level: Level, msg: string, fields?: Record<string, unknown>): void {
-  const line = JSON.stringify({ ts: new Date().toISOString(), level, msg, ...fields });
+  const line = redact(JSON.stringify({ ts: new Date().toISOString(), level, msg, ...fields }));
   if (level === "error" || level === "warn") console.error(line);
   else console.log(line);
 }
