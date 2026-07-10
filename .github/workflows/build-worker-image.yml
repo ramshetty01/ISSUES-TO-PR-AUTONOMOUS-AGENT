@@ -1,0 +1,41 @@
+name: build-worker-image
+
+# Verify the worker container builds. On main we also load it locally and run a
+# trivial smoke import so a broken image is caught before release.
+on:
+  workflow_call:
+  push:
+    branches: [main]
+    paths:
+      - "worker/**"
+      - ".github/workflows/build-worker-image.yml"
+  pull_request:
+    paths:
+      - "worker/**"
+      - ".github/workflows/build-worker-image.yml"
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build worker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./worker
+          file: ./worker/Dockerfile
+          push: false
+          load: true
+          tags: itpr-worker:local
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke-test the image
+        run: |
+          docker run --rm --entrypoint python itpr-worker:local \
+            -c "import issue_to_pr_agent; print('worker import ok')"

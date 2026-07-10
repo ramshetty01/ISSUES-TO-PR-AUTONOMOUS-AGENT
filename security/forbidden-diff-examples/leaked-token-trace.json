@@ -1,0 +1,28 @@
+{
+  "_comment": "Illustrative BAD trace fragment: an agent attempted to write the installation token into a committed file. The credential guard + secret scanner REJECT the commit, and the log scrubber redacts the value before this trace is ever stored. The 'attemptedRawSecret' below is a FAKE token assembled from fragments (ghp_ + filler); it is not a real credential. This file documents the reject; it is not applied.",
+  "traceId": "run-9f2c-leak",
+  "runId": "run-9f2c",
+  "event": "secret_commit_blocked",
+  "tool": "write_file",
+  "attempt": {
+    "path": "leak.txt",
+    "attemptedRawSecret": "ghp_0123456789abcdefghijklmnopqrstuvwxyz",
+    "origin": "issue_body_prompt_injection"
+  },
+  "safety": {
+    "scanner": "secret_scanner.py",
+    "kind": "github_token",
+    "verdict": "DENY",
+    "policy": "policies/safety-hard-rejects.yaml"
+  },
+  "storedAfterScrub": {
+    "path": "leak.txt",
+    "value": "[REDACTED:github_token]",
+    "note": "log_scrubber.py replaces the match idempotently before persistence"
+  },
+  "refusal": {
+    "code": "secret_detected",
+    "message": "secret(s) detected in content: github_token",
+    "outcome": "run aborted; no commit, no PR"
+  }
+}

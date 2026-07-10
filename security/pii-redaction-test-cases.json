@@ -1,0 +1,22 @@
+{
+  "description": "Vectors the PII scrubber MUST redact (emails, IPv4, phone numbers). expectedRedacted replaces each match with [REDACTED:<kind>].",
+  "placeholderFormat": "[REDACTED:<kind>]",
+  "cases": [
+    {
+      "input": "contact jane.doe@example.com for access",
+      "expectedRedacted": "contact [REDACTED:email] for access"
+    },
+    {
+      "input": "server responded from 203.0.113.42 last night",
+      "expectedRedacted": "server responded from [REDACTED:ipv4] last night"
+    },
+    {
+      "input": "call the on-call at +1 (555) 123-4567 if it breaks",
+      "expectedRedacted": "call the on-call at [REDACTED:phone] if it breaks"
+    },
+    {
+      "input": "no personal data here, just a build id 42",
+      "expectedRedacted": "no personal data here, just a build id 42"
+    }
+  ]
+}

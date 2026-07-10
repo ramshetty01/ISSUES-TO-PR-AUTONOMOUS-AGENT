@@ -1,0 +1,41 @@
+name: eval-internal
+
+# Zero-token smoke eval on every PR: runs the internal eval harness with the
+# mock provider over the "smoke" subset. No API keys, no cost, but it exercises
+# the full runner path (load fixtures -> plan -> apply -> score) so eval-code
+# regressions surface immediately. See docs/eval-methodology.md.
+on:
+  workflow_call:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - "eval/**"
+      - "worker/**"
+      - ".github/workflows/eval-internal.yml"
+
+jobs:
+  smoke-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      LLM_PROVIDER_ORDER: mock
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install worker (eval imports the worker package)
+        working-directory: worker
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run internal eval (mock provider, smoke subset)
+        run: |
+          python3 eval/runners/run_internal_eval.py \
+            --provider mock \
+            --subset smoke

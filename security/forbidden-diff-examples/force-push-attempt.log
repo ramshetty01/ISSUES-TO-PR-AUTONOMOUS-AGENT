@@ -1,0 +1,25 @@
+# Illustrative BAD tool invocation log — the safety layer MUST reject this.
+# An agent steered toward rewriting history triggers no_force_push.py, which
+# aborts the run. Reproduced here (redacted) for regression documentation.
+# This is NOT a real transcript and contains no real credentials.
+
+[run 9f2c] tool_call: run_shell
+  args.command = "git push --force origin HEAD:main"
+[run 9f2c] safety.no_force_push: DENY
+  reason      = force push to protected branch
+  branch      = main
+  protected   = true (policies/safety-hard-rejects.yaml)
+  match       = "--force" flag on push to protected ref
+[run 9f2c] refusal: force_push_blocked
+  message     = "refusing to force-push; protected branch history is immutable"
+[run 9f2c] run aborted (no commit, no push, no PR)
+
+# A second variant also rejected:
+[run 9f2c] tool_call: run_shell
+  args.command = "git push origin +HEAD:main"   # '+' = force refspec
+[run 9f2c] safety.no_force_push: DENY (force refspec detected)
+
+# Independent backstop:
+#   Even absent the in-process reject, the repo's branch protection
+#   (docs/branch-protection-requirements.md) disallows force pushes and the
+#   dispatcher verifies this before the run starts. Fails closed either way.

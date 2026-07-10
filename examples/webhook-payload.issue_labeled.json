@@ -1,0 +1,46 @@
+{
+  "_comment": "Example GitHub 'issues' webhook delivery (action=labeled) that triggers the agent. Trimmed to the fields the github-app reads: action, label.name, issue.labels[].name, issue.number/title/body, repository.owner.login + name, sender. See apps/github-app/src/filters and docs/github-app-permissions.md.",
+  "action": "labeled",
+  "label": {
+    "id": 208045946,
+    "name": "agent-fix",
+    "color": "0e8a16",
+    "default": false
+  },
+  "issue": {
+    "id": 1,
+    "number": 42,
+    "title": "add() returns wrong result for negative numbers",
+    "state": "open",
+    "body": "add(-2, 1) returns -3 but should return -1. Please fix and keep tests green.",
+    "labels": [
+      { "id": 208045946, "name": "agent-fix", "color": "0e8a16" }
+    ],
+    "user": {
+      "login": "octocat",
+      "id": 583231,
+      "type": "User"
+    },
+    "html_url": "https://github.com/acme/widgets/issues/42"
+  },
+  "repository": {
+    "id": 1296269,
+    "name": "widgets",
+    "full_name": "acme/widgets",
+    "private": false,
+    "default_branch": "main",
+    "owner": {
+      "login": "acme",
+      "id": 100,
+      "type": "Organization"
+    }
+  },
+  "sender": {
+    "login": "maintainer-jane",
+    "id": 700,
+    "type": "User"
+  },
+  "installation": {
+    "id": 12345678
+  }
+}

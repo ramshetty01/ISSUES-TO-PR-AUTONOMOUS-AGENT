@@ -1,0 +1,52 @@
+{
+  "_comment": "Example GitHub 'issue_comment' webhook delivery (action=created) on a PR/issue. Used to let a maintainer re-trigger or steer the agent. The actor filter ignores bots and the app's own login (apps/github-app/src/filters/actor-filter.ts); only a non-bot, permitted actor is processed.",
+  "action": "created",
+  "issue": {
+    "id": 1,
+    "number": 42,
+    "title": "add() returns wrong result for negative numbers",
+    "state": "open",
+    "pull_request": {
+      "url": "https://api.github.com/repos/acme/widgets/pulls/57",
+      "html_url": "https://github.com/acme/widgets/pull/57"
+    },
+    "labels": [
+      { "id": 208045946, "name": "agent-fix", "color": "0e8a16" }
+    ],
+    "user": {
+      "login": "octocat",
+      "id": 583231,
+      "type": "User"
+    }
+  },
+  "comment": {
+    "id": 99001122,
+    "body": "@itpr-agent please also add a regression test for add(0, 0).",
+    "user": {
+      "login": "maintainer-jane",
+      "id": 700,
+      "type": "User"
+    },
+    "html_url": "https://github.com/acme/widgets/pull/57#issuecomment-99001122"
+  },
+  "repository": {
+    "id": 1296269,
+    "name": "widgets",
+    "full_name": "acme/widgets",
+    "private": false,
+    "default_branch": "main",
+    "owner": {
+      "login": "acme",
+      "id": 100,
+      "type": "Organization"
+    }
+  },
+  "sender": {
+    "login": "maintainer-jane",
+    "id": 700,
+    "type": "User"
+  },
+  "installation": {
+    "id": 12345678
+  }
+}
