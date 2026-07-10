@@ -1,0 +1,6 @@
+# Repositories the agent is allowed to operate on. DENY-BY-DEFAULT: only repos
+# listed here are ever processed; an empty list denies everything.
+# `name: "*"` allows every repo under an owner. See examples/repo-allowlist.example.yaml.
+allowlist: []
+  # - { owner: acme, name: widgets }
+  # - { owner: acme, name: "*" }

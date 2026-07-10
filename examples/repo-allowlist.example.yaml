@@ -1,0 +1,7 @@
+# Example repo allowlist (see policies/repo-allowlist.yaml). Copy to
+# policies/repo-allowlist.yaml and list the repos the agent may act on.
+allowlist:
+  - { owner: acme, name: widgets }
+  - { owner: acme, name: docs }
+  # Allow every repo under an owner:
+  - { owner: my-org, name: "*" }

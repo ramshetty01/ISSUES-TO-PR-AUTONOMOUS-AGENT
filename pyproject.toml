@@ -1,0 +1,5 @@
+# Root marker for Python tooling. The worker package and its config live in
+# worker/pyproject.toml; this file keeps repo-root tools (ruff/black) consistent.
+[tool.ruff]
+line-length = 100
+extend-exclude = ["**/.next", "**/node_modules"]
