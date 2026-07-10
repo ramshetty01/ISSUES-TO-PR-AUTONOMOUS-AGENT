@@ -1,18 +1,49 @@
 import Link from "next/link";
 
-export default function HomePage() {
+import { formatCost } from "../lib/format-cost.js";
+import { api } from "../lib/api.js";
+
+/** Overview of recent runs. */
+export default async function HomePage() {
+  const runs = await api.listRuns();
   return (
     <div className="grid">
       <section className="panel">
-        <h1>Dashboard</h1>
-        <p className="muted">
-          Local view over runs, budgets, and safety events. Data is served by the
-          dispatcher/ledger API on localhost.
-        </p>
+        <h1>Recent runs</h1>
+        <p className="muted">Newest agent runs across all repos.</p>
       </section>
-      <nav className="panel grid">
+      {runs.length === 0 ? (
+        <p className="muted">No runs yet.</p>
+      ) : (
+        <table aria-label="recent runs">
+          <thead>
+            <tr>
+              <th>Run</th>
+              <th>Repo</th>
+              <th>State</th>
+              <th>Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            {runs.map((run) => (
+              <tr key={run.runId}>
+                <td>
+                  <Link href={`/runs/${run.runId}`}>{run.runId}</Link>
+                </td>
+                <td>
+                  {run.job.repo.owner}/{run.job.repo.name}
+                </td>
+                <td>
+                  <span className="badge">{run.state}</span>
+                </td>
+                <td>{formatCost(run.dollars)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <nav className="panel">
         <Link href="/budgets">Budgets →</Link>
-        <span className="muted">Runs and repo pages are linked from there.</span>
       </nav>
     </div>
   );

@@ -3,7 +3,7 @@ import type { Refusal, SafetyEvent } from "@itpr/shared-types";
 export interface SafetyEventsProps {
   events: SafetyEvent[];
   /** Populated when the run terminated in a refusal. */
-  refusal?: Refusal;
+  refusal?: Refusal | undefined;
 }
 
 /** Feed of safety events, with the terminal refusal (if any) pinned on top. */

@@ -1,10 +1,10 @@
 export interface TraceViewerProps {
   /** Full trace URL (from RunSummary.traceUrl), if already known. */
-  traceUrl?: string;
+  traceUrl?: string | undefined;
   /** Trace id, used with langfuseHost to build the link when traceUrl is absent. */
-  traceId?: string;
+  traceId?: string | undefined;
   /** Self-hosted Langfuse base, e.g. http://localhost:3000. */
-  langfuseHost?: string;
+  langfuseHost?: string | undefined;
 }
 
 /** Builds a deep-link into the self-hosted Langfuse trace (matches the worker). */
