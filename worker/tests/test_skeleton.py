@@ -48,6 +48,8 @@ def test_main_runs_full_bootstrap(
 ) -> None:
     from pathlib import Path
 
+    import types
+
     import issue_to_pr_agent.main as main_mod
 
     monkeypatch.setattr("shutil.which", lambda name: f"/usr/bin/{name}")
@@ -55,6 +57,10 @@ def test_main_runs_full_bootstrap(
     monkeypatch.setenv("ITPR_JOB_ID", "d-1")
     monkeypatch.setenv("GITHUB_INSTALLATION_TOKEN", "ghs_x")
     monkeypatch.setenv("ITPR_WORKSPACE_ROOT", str(Path(str(tmp_path))))
+    # The real pipeline needs a Docker sandbox (covered by test_pipeline.py); here
+    # we assert main() wires bootstrap -> run -> pipeline and returns its exit code.
+    fake = types.SimpleNamespace(exit_code=0, summary=types.SimpleNamespace(state="succeeded"))
+    monkeypatch.setattr(main_mod, "run_pipeline", lambda ctx, **kw: fake)
     assert main_mod.main() == 0
 
 
