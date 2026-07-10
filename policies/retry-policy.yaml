@@ -1,0 +1,6 @@
+# Exponential backoff for transient dispatch failures.
+maxAttempts: 5
+baseDelayMs: 1000
+maxDelayMs: 60000
+factor: 2
+jitter: false
