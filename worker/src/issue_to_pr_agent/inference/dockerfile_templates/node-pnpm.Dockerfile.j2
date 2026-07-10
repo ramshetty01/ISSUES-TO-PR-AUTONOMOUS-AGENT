@@ -1,0 +1,7 @@
+# Synthesized for a Node repo (pnpm).
+FROM node:20-slim
+WORKDIR /app
+RUN corepack enable
+COPY . .
+RUN pnpm install --frozen-lockfile || pnpm install
+CMD ["sh", "-c", "{{ test_command }}"]

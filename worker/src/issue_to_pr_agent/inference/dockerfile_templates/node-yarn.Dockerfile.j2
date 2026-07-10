@@ -1,0 +1,7 @@
+# Synthesized for a Node repo (yarn).
+FROM node:20-slim
+WORKDIR /app
+RUN corepack enable
+COPY . .
+RUN yarn install --frozen-lockfile || yarn install
+CMD ["sh", "-c", "{{ test_command }}"]

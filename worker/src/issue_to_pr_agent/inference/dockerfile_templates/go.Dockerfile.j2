@@ -1,0 +1,6 @@
+# Synthesized for a Go repo.
+FROM golang:1.22
+WORKDIR /app
+COPY . .
+RUN go mod download || true
+CMD ["sh", "-c", "{{ test_command }}"]
