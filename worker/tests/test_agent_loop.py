@@ -13,7 +13,7 @@ from issue_to_pr_agent.agent import (
 )
 from issue_to_pr_agent.agent.observation_budget import ObservationBudget
 from issue_to_pr_agent.llm.client import LLMClient
-from issue_to_pr_agent.llm.provider_base import Completion, Message, Provider, TokenUsage
+from issue_to_pr_agent.llm.provider_base import Completion, Provider, TokenUsage
 from issue_to_pr_agent.llm.router import Router
 from issue_to_pr_agent.sandbox.command_runner import CommandResult
 from issue_to_pr_agent.sandbox.filesystem import PathJail
