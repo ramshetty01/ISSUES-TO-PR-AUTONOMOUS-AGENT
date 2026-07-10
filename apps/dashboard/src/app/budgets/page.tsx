@@ -4,6 +4,9 @@ import { CostChart } from "../../components/CostChart.js";
 import { RepoBudgetTable } from "../../components/RepoBudgetTable.js";
 import { api } from "../../lib/api.js";
 
+// Backed by a runtime API; render per-request rather than prerendering at build.
+export const dynamic = "force-dynamic";
+
 /** Cross-repo budget table + aggregate cost chart (spend per repo). */
 export default async function BudgetsPage() {
   const budgets = await api.listBudgets();

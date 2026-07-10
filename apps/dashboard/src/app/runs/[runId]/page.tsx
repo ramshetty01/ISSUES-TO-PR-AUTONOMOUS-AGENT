@@ -5,6 +5,9 @@ import { formatCost, formatTokens } from "../../../lib/format-cost.js";
 import { durationBetween } from "../../../lib/format-duration.js";
 import { api } from "../../../lib/api.js";
 
+// Backed by a runtime API; render per-request rather than prerendering at build.
+export const dynamic = "force-dynamic";
+
 /** Full run detail: timeline + trace link + safety events. */
 export default async function RunPage({ params }: { params: { runId: string } }) {
   const run = await api.getRun(params.runId);

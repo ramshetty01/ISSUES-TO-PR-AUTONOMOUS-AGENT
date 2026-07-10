@@ -3,6 +3,9 @@ import Link from "next/link";
 import { formatCost } from "../lib/format-cost.js";
 import { api } from "../lib/api.js";
 
+// Backed by a runtime API; render per-request rather than prerendering at build.
+export const dynamic = "force-dynamic";
+
 /** Overview of recent runs. */
 export default async function HomePage() {
   const runs = await api.listRuns();
