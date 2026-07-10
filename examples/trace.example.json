@@ -1,0 +1,72 @@
+{
+  "traceId": "run-3f2a",
+  "name": "run",
+  "spans": [
+    {
+      "spanId": "run-3f2a-0001",
+      "parentId": null,
+      "name": "bootstrap",
+      "startedAt": "2026-01-01T00:00:00+00:00",
+      "endedAt": "2026-01-01T00:00:03+00:00",
+      "attributes": {}
+    },
+    {
+      "spanId": "run-3f2a-0002",
+      "parentId": "run-3f2a-0001",
+      "name": "clone_repo",
+      "startedAt": "2026-01-01T00:00:01+00:00",
+      "endedAt": "2026-01-01T00:00:02+00:00",
+      "attributes": {
+        "repo": "acme/widgets"
+      }
+    },
+    {
+      "spanId": "run-3f2a-0003",
+      "parentId": null,
+      "name": "agent_loop",
+      "startedAt": "2026-01-01T00:00:04+00:00",
+      "endedAt": "2026-01-01T00:00:11+00:00",
+      "attributes": {
+        "tokens": 1240
+      }
+    },
+    {
+      "spanId": "run-3f2a-0004",
+      "parentId": "run-3f2a-0003",
+      "name": "plan",
+      "startedAt": "2026-01-01T00:00:05+00:00",
+      "endedAt": "2026-01-01T00:00:06+00:00",
+      "attributes": {}
+    },
+    {
+      "spanId": "run-3f2a-0005",
+      "parentId": "run-3f2a-0003",
+      "name": "edit_file",
+      "startedAt": "2026-01-01T00:00:07+00:00",
+      "endedAt": "2026-01-01T00:00:08+00:00",
+      "attributes": {
+        "path": "src/app.py"
+      }
+    },
+    {
+      "spanId": "run-3f2a-0006",
+      "parentId": "run-3f2a-0003",
+      "name": "run_tests",
+      "startedAt": "2026-01-01T00:00:09+00:00",
+      "endedAt": "2026-01-01T00:00:10+00:00",
+      "attributes": {
+        "passed": true
+      }
+    },
+    {
+      "spanId": "run-3f2a-0007",
+      "parentId": null,
+      "name": "open_pr",
+      "startedAt": "2026-01-01T00:00:12+00:00",
+      "endedAt": "2026-01-01T00:00:13+00:00",
+      "attributes": {
+        "url": "https://github.com/acme/widgets/pull/12"
+      }
+    }
+  ]
+}

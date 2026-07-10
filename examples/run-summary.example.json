@@ -1,0 +1,63 @@
+{
+  "runId": "run-3f2a",
+  "job": {
+    "id": "run-3f2a",
+    "repo": {
+      "owner": "acme",
+      "name": "widgets"
+    },
+    "installationId": 42,
+    "trigger": "issue_labeled",
+    "headSha": "9c1f0ab",
+    "labels": [
+      "agent"
+    ],
+    "createdAt": "2026-01-01T00:00:00+00:00",
+    "issueNumber": 7,
+    "prNumber": null
+  },
+  "state": "succeeded",
+  "timeline": [
+    {
+      "at": "2026-01-01T00:00:00+00:00",
+      "kind": "plan",
+      "message": "Planned fix for null-pointer in parser"
+    },
+    {
+      "at": "2026-01-01T00:00:01+00:00",
+      "kind": "edit",
+      "message": "Edited src/app.py",
+      "data": {
+        "path": "src/app.py"
+      }
+    },
+    {
+      "at": "2026-01-01T00:00:02+00:00",
+      "kind": "test",
+      "message": "Test suite passed",
+      "data": {
+        "passed": 12,
+        "failed": 0
+      }
+    },
+    {
+      "at": "2026-01-01T00:00:03+00:00",
+      "kind": "pr_opened",
+      "message": "Opened PR #12",
+      "data": {
+        "url": "https://github.com/acme/widgets/pull/12"
+      }
+    }
+  ],
+  "usage": {
+    "input": 980,
+    "output": 260,
+    "total": 1240
+  },
+  "dollars": 0.0,
+  "safetyEvents": [],
+  "startedAt": "2026-01-01T00:00:00+00:00",
+  "prUrl": "https://github.com/acme/widgets/pull/12",
+  "traceUrl": "http://localhost:3000/trace/run-3f2a",
+  "finishedAt": "2026-01-01T00:03:20+00:00"
+}
