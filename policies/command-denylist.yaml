@@ -1,0 +1,9 @@
+# Shell commands the agent must never run (regex, case-insensitive).
+deny:
+  - '\brm\s+-rf\s+/(?:\s|$)'      # rm -rf /
+  - '\bmkfs\b'                     # format a filesystem
+  - '\bdd\s+if=.*of=/dev/'         # overwrite a device
+  - 'curl\s+[^|]*\|\s*(?:ba)?sh'   # curl | sh
+  - 'wget\s+[^|]*\|\s*(?:ba)?sh'   # wget | sh
+  - '>\s*/dev/sd[a-z]'             # write to a raw disk
+  - '\bchmod\s+-R\s+777\s+/'       # world-writable root
