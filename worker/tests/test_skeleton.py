@@ -8,7 +8,6 @@ import pytest
 
 from issue_to_pr_agent import Job, WorkerConfig
 from issue_to_pr_agent.errors import BootstrapError, SafetyRefusal
-from issue_to_pr_agent.main import build_context, run
 
 CAMEL_JOB = {
     "id": "d-1",
@@ -44,22 +43,28 @@ def test_config_provider_order_splits() -> None:
     assert cfg.provider_order == ["nvidia_nim", "groq", "mock"]
 
 
-def test_build_context_and_run(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_main_runs_full_bootstrap(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: object
+) -> None:
+    from pathlib import Path
+
+    import issue_to_pr_agent.main as main_mod
+
+    monkeypatch.setattr("shutil.which", lambda name: f"/usr/bin/{name}")
     monkeypatch.setenv("ITPR_JOB", json.dumps(CAMEL_JOB))
     monkeypatch.setenv("ITPR_JOB_ID", "d-1")
-    ctx = build_context()
-    assert ctx.run_id == "d-1"
-    assert ctx.job.repo.name == "widgets"
-    assert run(ctx) == 0
-    assert any("started" in e for e in ctx.events)
+    monkeypatch.setenv("GITHUB_INSTALLATION_TOKEN", "ghs_x")
+    monkeypatch.setenv("ITPR_WORKSPACE_ROOT", str(Path(str(tmp_path))))
+    assert main_mod.main() == 0
 
 
-def test_build_context_requires_job(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_main_returns_2_without_job(monkeypatch: pytest.MonkeyPatch) -> None:
+    import issue_to_pr_agent.main as main_mod
+
+    monkeypatch.setattr("shutil.which", lambda name: f"/usr/bin/{name}")
     monkeypatch.delenv("ITPR_JOB", raising=False)
-    from issue_to_pr_agent.errors import WorkerError
-
-    with pytest.raises(WorkerError):
-        build_context()
+    monkeypatch.delenv("ITPR_JOB_FILE", raising=False)
+    assert main_mod.main() == 2
 
 
 def test_safety_refusal_carries_reason() -> None:
