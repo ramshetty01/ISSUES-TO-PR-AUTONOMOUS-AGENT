@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { RateLimitBanner } from "../components/RateLimitBanner.js";
 import { formatCost } from "../lib/format-cost.js";
 import { api } from "../lib/api.js";
 
@@ -8,9 +9,13 @@ export const dynamic = "force-dynamic";
 
 /** Overview of recent runs. */
 export default async function HomePage() {
-  const runs = await api.listRuns();
+  const [runs, rateLimit] = await Promise.all([
+    api.listRuns(),
+    api.getRateLimit(),
+  ]);
   return (
     <div className="grid">
+      <RateLimitBanner status={rateLimit} />
       <section className="panel">
         <h1>Recent runs</h1>
         <p className="muted">Newest agent runs across all repos.</p>
