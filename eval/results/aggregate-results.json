@@ -1,0 +1,46 @@
+{
+  "internal": {
+    "count": 14,
+    "passRate": 1.0,
+    "avgPrQuality": 1.0,
+    "avgStyleConformance": 1.0,
+    "avgSafetyScore": 1.0,
+    "avgOperatorUxScore": 1.0,
+    "totalDollars": 0.0,
+    "totalTokens": 0
+  },
+  "internalProvider": "mock",
+  "internalSubset": "full",
+  "ablation": {
+    "mock": {
+      "count": 4,
+      "passRate": 1.0,
+      "avgPrQuality": 1.0,
+      "avgStyleConformance": 1.0,
+      "avgSafetyScore": 1.0,
+      "avgOperatorUxScore": 1.0,
+      "totalDollars": 0.0,
+      "totalTokens": 0
+    },
+    "gemini": {
+      "count": 4,
+      "passRate": 1.0,
+      "avgPrQuality": 1.0,
+      "avgStyleConformance": 1.0,
+      "avgSafetyScore": 1.0,
+      "avgOperatorUxScore": 1.0,
+      "totalDollars": 0.0,
+      "totalTokens": 0
+    },
+    "ollama": {
+      "count": 4,
+      "passRate": 1.0,
+      "avgPrQuality": 1.0,
+      "avgStyleConformance": 1.0,
+      "avgSafetyScore": 1.0,
+      "avgOperatorUxScore": 1.0,
+      "totalDollars": 0.0,
+      "totalTokens": 0
+    }
+  }
+}
