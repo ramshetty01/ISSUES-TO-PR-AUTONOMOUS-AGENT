@@ -9,6 +9,10 @@ dist/
 .turbo/
 *.tsbuildinfo
 
+# next.js
+.next/
+next-env.d.ts
+
 # python
 .venv/
 __pycache__/
