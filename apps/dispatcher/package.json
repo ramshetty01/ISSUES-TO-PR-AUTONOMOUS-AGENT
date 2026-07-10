@@ -14,6 +14,7 @@
     "@aws-sdk/client-sqs": "^3.637.0",
     "@itpr/budget-ledger": "workspace:*",
     "@itpr/config": "workspace:*",
+    "@itpr/github-client": "workspace:*",
     "@itpr/shared-types": "workspace:*",
     "yaml": "^2.5.0"
   },

@@ -1,0 +1,5 @@
+# Protection the default branch must have before the agent will operate.
+requirePullRequest: true
+minApprovals: 1
+disallowForcePush: true
+restrictDirectPush: true
