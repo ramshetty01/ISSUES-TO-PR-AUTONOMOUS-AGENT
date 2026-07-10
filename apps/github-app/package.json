@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.637.0",
     "@itpr/config": "workspace:*",
     "@itpr/github-client": "workspace:*",
     "@itpr/shared-types": "workspace:*",
