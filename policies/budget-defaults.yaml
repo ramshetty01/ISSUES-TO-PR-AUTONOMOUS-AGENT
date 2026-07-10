@@ -1,0 +1,10 @@
+# Per-repo daily budgets. Free-tier providers meter tokens, so token caps apply
+# even when the dollar cost is $0. dollarCap is imputed at provider list price.
+tokenCap: 200000
+dollarCap: 5
+
+# Per-repo overrides, keyed by "owner/name".
+overrides:
+  # acme/widgets:
+  #   tokenCap: 500000
+  #   dollarCap: 10

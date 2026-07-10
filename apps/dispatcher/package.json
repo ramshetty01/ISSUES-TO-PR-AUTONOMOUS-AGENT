@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.637.0",
+    "@itpr/budget-ledger": "workspace:*",
     "@itpr/config": "workspace:*",
-    "@itpr/shared-types": "workspace:*"
+    "@itpr/shared-types": "workspace:*",
+    "yaml": "^2.5.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
