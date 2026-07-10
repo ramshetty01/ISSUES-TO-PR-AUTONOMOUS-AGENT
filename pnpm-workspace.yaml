@@ -2,3 +2,4 @@
 packages:
   - "packages/shared-types"
   - "packages/config"
+  - "packages/github-client"
