@@ -5,3 +5,4 @@ packages:
   - "packages/github-client"
   - "packages/budget-ledger"
   - "packages/log-redaction"
+  - "apps/github-app"
