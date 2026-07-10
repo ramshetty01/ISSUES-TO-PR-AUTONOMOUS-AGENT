@@ -17,6 +17,9 @@ importers:
 
   apps/github-app:
     dependencies:
+      '@aws-sdk/client-sqs':
+        specifier: ^3.637.0
+        version: 3.1084.0
       '@itpr/config':
         specifier: workspace:*
         version: link:../../packages/config
@@ -151,6 +154,10 @@ packages:
     resolution: {integrity: sha512-OEpj0IEqUoJiEUa1/+/b+9OD9O20kR/c09VBxM1g/QeCfQqYaDr78HLN1zDSFGG7Y2wQeIPNKDF35IInaXnBWA==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/client-sqs@3.1084.0':
+    resolution: {integrity: sha512-leaY5TahPPqtEnxEYVSa2t1eIl4+AQ6uBtolMn1J0kstOKGWaWPv6YugBQKLi0RizQbgZedB+o8e58QOHEZndg==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/core@3.975.1':
     resolution: {integrity: sha512-8qh/6EYb7hl/ZwVfQufhbMEZs1gQIc7GbdrIf4eprQJ7cv042+74nE6l3YDfyWNzb9iPXb8fRyYSHkNIk5eE6Q==}
     engines: {node: '>=20.0.0'}
@@ -203,6 +210,10 @@ packages:
 
   '@aws-sdk/middleware-endpoint-discovery@3.972.23':
     resolution: {integrity: sha512-FoEkpD2A8haYWNT4wp8zW1x0Hc+NyxcnKJ2Hf4jX8EI5R4ybo1LRI3ql7iuFX1MTyklZx9hum9dPkq6R46pQMw==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/middleware-sdk-sqs@3.972.35':
+    resolution: {integrity: sha512-J1u7OABwjjBB7sUJiET05dPVAfjFeR6vfM5//DInKuPzc7PhPVNEviC7RqbsIsBdZi8xICVnHemFrTuvGmhySA==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/nested-clients@3.997.31':
@@ -1475,6 +1486,18 @@ snapshots:
       '@smithy/types': 4.16.0
       tslib: 2.8.1
 
+  '@aws-sdk/client-sqs@3.1084.0':
+    dependencies:
+      '@aws-sdk/core': 3.975.1
+      '@aws-sdk/credential-provider-node': 3.972.66
+      '@aws-sdk/middleware-sdk-sqs': 3.972.35
+      '@aws-sdk/types': 3.974.0
+      '@smithy/core': 3.29.2
+      '@smithy/fetch-http-handler': 5.6.4
+      '@smithy/node-http-handler': 4.9.4
+      '@smithy/types': 4.16.0
+      tslib: 2.8.1
+
   '@aws-sdk/core@3.975.1':
     dependencies:
       '@aws-sdk/types': 3.974.0
@@ -1594,6 +1617,13 @@ snapshots:
   '@aws-sdk/middleware-endpoint-discovery@3.972.23':
     dependencies:
       '@aws-sdk/endpoint-cache': 3.972.9
+      '@aws-sdk/types': 3.974.0
+      '@smithy/core': 3.29.2
+      '@smithy/types': 4.16.0
+      tslib: 2.8.1
+
+  '@aws-sdk/middleware-sdk-sqs@3.972.35':
+    dependencies:
       '@aws-sdk/types': 3.974.0
       '@smithy/core': 3.29.2
       '@smithy/types': 4.16.0
