@@ -20,12 +20,18 @@ importers:
       '@aws-sdk/client-sqs':
         specifier: ^3.637.0
         version: 3.1084.0
+      '@itpr/budget-ledger':
+        specifier: workspace:*
+        version: link:../../packages/budget-ledger
       '@itpr/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@itpr/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
+      yaml:
+        specifier: ^2.5.0
+        version: 2.9.0
     devDependencies:
       '@types/node':
         specifier: ^20.14.0
