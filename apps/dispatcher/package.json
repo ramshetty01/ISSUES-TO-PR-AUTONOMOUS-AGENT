@@ -15,6 +15,7 @@
     "@itpr/budget-ledger": "workspace:*",
     "@itpr/config": "workspace:*",
     "@itpr/github-client": "workspace:*",
+    "@itpr/log-redaction": "workspace:*",
     "@itpr/shared-types": "workspace:*",
     "yaml": "^2.5.0"
   },

@@ -72,6 +72,9 @@ importers:
       '@itpr/github-client':
         specifier: workspace:*
         version: link:../../packages/github-client
+      '@itpr/log-redaction':
+        specifier: workspace:*
+        version: link:../../packages/log-redaction
       '@itpr/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
@@ -103,6 +106,9 @@ importers:
       '@itpr/github-client':
         specifier: workspace:*
         version: link:../../packages/github-client
+      '@itpr/log-redaction':
+        specifier: workspace:*
+        version: link:../../packages/log-redaction
       '@itpr/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types

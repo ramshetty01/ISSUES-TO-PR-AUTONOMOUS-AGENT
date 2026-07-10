@@ -56,7 +56,7 @@ export function createServer(opts: ServerOptions = {}): Express {
   const onWebhook: WebhookSink =
     opts.onWebhook ??
     (({ event, deliveryId }) =>
-      logger.info("webhook received (stub)", { event, deliveryId }));
+      logger.info("webhook received (no handler configured)", { event, deliveryId }));
 
   app.post("/webhook", async (req, res) => {
     const event = req.header("x-github-event") ?? "unknown";
