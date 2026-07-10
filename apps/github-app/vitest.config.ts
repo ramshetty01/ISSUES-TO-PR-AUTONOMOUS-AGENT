@@ -10,6 +10,9 @@ export default defineConfig({
       "tests/github-helpers.test.ts",
       "tests/filters.test.ts",
       "tests/queue.test.ts",
+      "tests/issue-labeled.handler.test.ts",
+      "tests/pr-comment.handler.test.ts",
+      "tests/webhook-route.test.ts",
     ],
   },
 });
