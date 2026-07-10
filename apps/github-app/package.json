@@ -16,7 +16,8 @@
     "@itpr/shared-types": "workspace:*",
     "@octokit/app": "^15.1.0",
     "express": "^4.19.2",
-    "smee-client": "^2.0.4"
+    "smee-client": "^2.0.4",
+    "yaml": "^2.5.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
