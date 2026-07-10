@@ -79,6 +79,29 @@ class GitHubClient:
         if status not in (200, 201):
             raise WorkerError(f"add labels failed ({status})")
 
+    def create_review(
+        self,
+        repo: Repo,
+        pull_number: int,
+        *,
+        body: str = "",
+        event: str = "COMMENT",
+        comments: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {"event": event}
+        if body:
+            payload["body"] = body
+        if comments:
+            payload["comments"] = comments
+        status, data = self._request(
+            "POST",
+            f"/repos/{repo.owner}/{repo.name}/pulls/{pull_number}/reviews",
+            payload,
+        )
+        if status not in (200, 201):
+            raise WorkerError(f"create review failed ({status})")
+        return data
+
     def create_comment(self, repo: Repo, issue_number: int, body: str) -> dict[str, Any]:
         status, data = self._request(
             "POST",
