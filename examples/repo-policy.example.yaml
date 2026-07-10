@@ -1,0 +1,17 @@
+# Example resolved per-repo policy (shape: RepoPolicy in @itpr/shared-types).
+# Copy policies/default-repo-policy.yaml and narrow it for a specific repo.
+repo:
+  owner: acme
+  name: widgets
+
+# This repo opts into a second trigger label on top of the default.
+requiredLabels:
+  - agent-fix
+  - bot-fix
+
+# Tighter change-size ceilings than the defaults.
+maxDiffLines: 300
+maxChangedFiles: 15
+
+# Set true only after the branch-protection gate has passed for this repo.
+branchProtectionOk: true

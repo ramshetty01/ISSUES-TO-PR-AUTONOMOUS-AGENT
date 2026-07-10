@@ -1,0 +1,33 @@
+# Example LLM provider configuration (see policies/llm-provider-limits.yaml).
+# Fallback order is tried left-to-right; the first healthy provider serves the
+# request. `mock` is always last so the stack works with zero API keys.
+order:
+  - groq
+  - gemini
+  - nvidia_nim
+  - ollama
+  - mock
+
+# Free-tier caps: requests/min (rpm), tokens/min (tpm), tokens/day (daily).
+# 0 = unlimited (local providers).
+providers:
+  groq:
+    rpm: 30
+    tpm: 6000
+    daily: 500000
+  gemini:
+    rpm: 15
+    tpm: 1000000
+    daily: 1500000
+  nvidia_nim:
+    rpm: 40
+    tpm: 60000
+    daily: 0
+  ollama:
+    rpm: 0
+    tpm: 0
+    daily: 0
+  mock:
+    rpm: 0
+    tpm: 0
+    daily: 0
