@@ -1,0 +1,14 @@
+# Example per-repo daily budgets (see policies/budget-defaults.yaml).
+# Free-tier providers meter tokens, so tokenCap applies even at $0; dollarCap is
+# imputed at provider list price.
+tokenCap: 200000
+dollarCap: 5
+
+# Per-repo overrides, keyed by "owner/name".
+overrides:
+  acme/widgets:
+    tokenCap: 500000
+    dollarCap: 10
+  acme/docs:
+    tokenCap: 100000
+    dollarCap: 2

@@ -1,0 +1,20 @@
+# The default operating policy applied to every allowlisted repo, unless a
+# per-repo override narrows it (see examples/repo-policy.example.yaml).
+# Deny-by-default: a repo is processed only when it is explicitly allowlisted
+# AND its default branch has passed the branch-protection gate.
+#
+# Shape mirrors RepoPolicy in @itpr/shared-types (the `repo` field is filled in
+# per repo at dispatch time).
+
+# Labels that trigger the agent (source of truth: allowed-labels.yaml).
+requiredLabels:
+  - agent-fix
+
+# Change-size ceilings. A PR exceeding either is refused by the verification
+# gate before anything is pushed.
+maxDiffLines: 400
+maxChangedFiles: 20
+
+# Must be re-verified per repo against branch-protection-required.yaml at
+# dispatch time. Default false enforces deny-by-default until the gate passes.
+branchProtectionOk: false
