@@ -1,0 +1,63 @@
+# ---------------------------------------------------------------------------
+# Standalone self-hosted Langfuse (+ its Postgres). Usable on its own when you
+# only want tracing without the rest of the local stack:
+#
+#   docker compose -f infra/local/langfuse/docker-compose.langfuse.yml up -d
+#
+# Serves the UI/API at http://localhost:3000 to match LANGFUSE_HOST in
+# packages/config/src/defaults.ts.
+# ---------------------------------------------------------------------------
+
+name: itpr-langfuse
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: itpr-langfuse-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: langfuse
+    ports:
+      - "5432:5432"
+    volumes:
+      - langfuse-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d langfuse"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - langfuse
+
+  langfuse:
+    image: langfuse/langfuse:latest
+    container_name: itpr-langfuse
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/langfuse
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:-local-dev-nextauth-secret-change-me}
+      SALT: ${LANGFUSE_SALT:-local-dev-salt-change-me}
+      TELEMETRY_ENABLED: ${LANGFUSE_TELEMETRY_ENABLED:-false}
+      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "false"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:3000/api/public/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - langfuse
+
+volumes:
+  langfuse-postgres-data:
+
+networks:
+  langfuse:
+    name: itpr-langfuse
