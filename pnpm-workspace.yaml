@@ -4,3 +4,4 @@ packages:
   - "packages/config"
   - "packages/github-client"
   - "packages/budget-ledger"
+  - "packages/log-redaction"
