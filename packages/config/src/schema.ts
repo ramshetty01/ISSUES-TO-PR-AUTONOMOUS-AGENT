@@ -19,7 +19,8 @@ export const configSchema = z.object({
   GITHUB_APP_ID: z.string().min(1, "GITHUB_APP_ID is required"),
   GITHUB_APP_PRIVATE_KEY: z
     .string()
-    .min(1, "GITHUB_APP_PRIVATE_KEY is required"),
+    .min(1, "GITHUB_APP_PRIVATE_KEY is required")
+    .transform((key) => key.replace(/\\n/g, "\n")),
   GITHUB_WEBHOOK_SECRET: z
     .string()
     .min(1, "GITHUB_WEBHOOK_SECRET is required"),
@@ -47,6 +48,7 @@ export const configSchema = z.object({
     .string()
     .transform((s) => s.split(",").map((x) => x.trim()).filter(Boolean)),
   NVIDIA_NIM_API_KEY: z.string().optional(),
+  NVIDIA_NIM_MODEL: z.string().optional(),
   GEMINI_API_KEY: z.string().optional(),
   GROQ_API_KEY: z.string().optional(),
   OLLAMA_HOST: z.string().url(),

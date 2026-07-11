@@ -24,5 +24,6 @@ export const DEV_DEFAULTS = {
   OLLAMA_HOST: "http://localhost:11434",
 
   /** Default provider fallback order (comma-separated). */
-  LLM_PROVIDER_ORDER: "mock",
+  LLM_PROVIDER_ORDER: "nvidia_nim,mock",
+  NVIDIA_NIM_MODEL: "qwen/qwen3.5-122b-a10b",
 } as const satisfies Record<string, string>;

@@ -125,9 +125,14 @@ def test_openai_compat_provider_shapes_request() -> None:
     res = p.complete(MSGS)
     assert res.text == "patched"
     assert res.usage.input == 12 and res.usage.output == 3
-    method, url, headers, _ = calls[0]
+    method, url, headers, body = calls[0]
     assert method == "POST" and url.endswith("/chat/completions")
     assert headers["Authorization"] == "Bearer nim_key"
+    assert body is not None
+    payload = body.decode()
+    assert '"model": "qwen/qwen3.5-122b-a10b"' in payload
+    assert '"temperature": 0.6' in payload
+    assert '"top_p": 0.95' in payload
 
 
 def test_openai_compat_maps_429_to_rate_limit() -> None:

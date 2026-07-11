@@ -2,4 +2,4 @@
 requirePullRequest: true
 minApprovals: 1
 disallowForcePush: true
-restrictDirectPush: true
+restrictDirectPush: false

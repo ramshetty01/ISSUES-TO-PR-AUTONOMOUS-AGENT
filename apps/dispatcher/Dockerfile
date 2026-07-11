@@ -1,7 +1,10 @@
 # Dispatcher image — built from the pnpm monorepo root as context.
 # Minimal: install workspace deps, build all packages, run the dispatcher.
-FROM node:20-slim AS base
+FROM node:22-slim AS base
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends docker.io \
+    && rm -rf /var/lib/apt/lists/*
 RUN corepack enable
 WORKDIR /repo
 

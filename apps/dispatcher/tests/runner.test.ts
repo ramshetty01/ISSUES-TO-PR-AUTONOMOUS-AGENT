@@ -49,6 +49,7 @@ describe("container-limits", () => {
     expect(args).toContain("--read-only");
     expect(s).toContain("--cap-drop ALL");
     expect(s).toContain("--security-opt no-new-privileges");
+    expect(args).toContain("/workspace:rw,exec,nosuid,mode=1777");
   });
 });
 
@@ -61,6 +62,8 @@ describe("worker-env", () => {
     });
     expect(env.GITHUB_INSTALLATION_TOKEN).toBe("ghs_secret");
     expect(env.ITPR_JOB_ID).toBe("d-1");
+    expect(env.ITPR_SANDBOX_MODE).toBe("process");
+    expect(env.NVIDIA_NIM_MODEL).toBe("qwen/qwen3.5-122b-a10b");
     expect(env.AWS_ENDPOINT_URL).toContain("4566");
     expect(keys).toContain("GITHUB_INSTALLATION_TOKEN");
   });
@@ -109,6 +112,7 @@ describe("runDockerWorker", () => {
 
     const handle = runDockerWorker(job, {
       image: "itpr-worker",
+      network: "itpr-local",
       installationToken: "ghs_secret",
       timeoutMs: 1000,
       source: ENV_SOURCE,
@@ -119,6 +123,7 @@ describe("runDockerWorker", () => {
     const [cmd, argv, spawnOpts] = spawnFn.mock.calls[0]!;
     expect(cmd).toBe("docker");
     expect(argv).not.toContain("ghs_secret");
+    expect(argv).toContain("itpr-local");
     expect(spawnOpts.env.GITHUB_INSTALLATION_TOKEN).toBe("ghs_secret");
     expect(handle.containerName).toBe("itpr-worker-d-1");
 

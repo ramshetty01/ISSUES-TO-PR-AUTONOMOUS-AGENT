@@ -1,8 +1,8 @@
 # Internal eval scorecard
 
 - **Provider:** mock
-- **Subset:** full
-- **Issues:** 14
+- **Subset:** smoke
+- **Issues:** 4
 - **Pass rate:** 100.0%
 - **Avg PR quality:** 1.0
 - **Avg style conformance:** 1.0

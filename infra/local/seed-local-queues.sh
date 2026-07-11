@@ -36,6 +36,6 @@ awslocal sqs send-message \
   --region "${REGION}" \
   --queue-url "${QUEUE_URL}" \
   --message-body "${BODY}" \
-  --message-attributes 'seed={DataType=String,StringValue=itpr-sample-seed}' >/dev/null
+  --message-attributes 'seed={DataType=String,StringValue=itpr-sample-seed},deliveryId={DataType=String,StringValue=sample-0001}' >/dev/null
 
 echo "[seed] enqueued sample job onto ${QUEUE_NAME}"

@@ -84,6 +84,33 @@ def test_loop_writes_then_finishes(tmp_path: Path) -> None:
     assert result.stop_reason == "finished"
 
 
+def test_loop_exposes_tool_contract_to_model(tmp_path: Path) -> None:
+    provider = ScriptedProvider([
+        "PLAN",
+        action_json(finish=True, success=False),
+    ])
+    captured = []
+    original_complete = provider.complete
+
+    def record(messages, *, max_tokens=1024, temperature=0.2):
+        captured.append((messages, max_tokens))
+        return original_complete(
+            messages, max_tokens=max_tokens, temperature=temperature
+        )
+
+    provider.complete = record  # type: ignore[method-assign]
+    llm = LLMClient(Router([provider]))
+
+    run_agent(llm, build_default_registry(), ctx(tmp_path), "edit a file")
+
+    action_messages, max_tokens = captured[1]
+    prompt = action_messages[-1].content
+    assert "## Available tools" in prompt
+    assert '"name": "edit_file"' in prompt
+    assert '"old"' in prompt
+    assert max_tokens == 16384
+
+
 def test_loop_tool_failure_is_recoverable(tmp_path: Path) -> None:
     llm = client([
         "PLAN",

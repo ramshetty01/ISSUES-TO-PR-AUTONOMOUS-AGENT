@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from .agent import run_agent
-from .errors import SafetyRefusal
+from .errors import SafetyRefusal, SandboxError
 from .llm.client import LLMClient
 from .llm.provider_base import TokenUsage
 from .observability import (
@@ -101,6 +101,13 @@ def run_pipeline(
 
     events.record("start", f"run {ctx.run_id} for {ctx.job.repo.owner}/{ctx.job.repo.name}")
 
+    from .github.clone import SubprocessGitRunner
+
+    git_runner = SubprocessGitRunner()
+    pr_branch: str | None = None
+    if github is not None:
+        pr_branch = _prepare_pr_branch(ctx, git_runner, events)
+
     with tracer.span("sandbox_start"):
         sandbox.start()
 
@@ -118,13 +125,11 @@ def run_pipeline(
 
         # --- agent loop ---------------------------------------------------
         with tracer.span("agent_loop") as span:
-            from .github.clone import SubprocessGitRunner
-
             registry = build_default_registry()
             toolctx = ToolContext(
                 sandbox=sandbox,
                 repo_dir=ctx.workspace,
-                git=SubprocessGitRunner(),
+                git=git_runner,
                 github=github,
                 repo=ctx.job.repo,
             )
@@ -168,9 +173,20 @@ def run_pipeline(
         # --- PR authoring -------------------------------------------------
         if state == "succeeded" and github is not None and diff.strip():
             with tracer.span("pr_authoring"):
-                pr_url = _open_pr_safe(ctx, github, diff, result.summary, langfuse, events)
+                pr_url = _open_pr_safe(
+                    ctx,
+                    github,
+                    diff,
+                    result.summary,
+                    langfuse,
+                    events,
+                    branch=pr_branch,
+                    git_runner=git_runner,
+                )
+        elif state == "succeeded" and github is None:
+            events.record("pr", "PR authoring skipped (no GitHub client)")
         elif state == "succeeded":
-            events.record("pr", "PR authoring skipped (no GitHub client or empty diff)")
+            events.record("pr", "PR authoring skipped (empty diff)")
 
     finally:
         with tracer.span("sandbox_teardown"):
@@ -238,11 +254,22 @@ def _reasons(verdict: Any) -> str:
 
 
 def _open_pr_safe(
-    ctx: RuntimeContext, github: Any, diff: str, summary: str, langfuse: LangfuseClient, events: EventLog
+    ctx: RuntimeContext,
+    github: Any,
+    diff: str,
+    summary: str,
+    langfuse: LangfuseClient,
+    events: EventLog,
+    *,
+    branch: str | None,
+    git_runner: Any | None,
 ) -> str | None:
     from .pr import PRBodyInput, apply_outcome_labels, generate_body, generate_title, open_pr
 
     try:
+        if not branch or git_runner is None:
+            events.record("pr", "PR authoring skipped (no PR branch prepared)")
+            return None
         issue_number = ctx.job.issue_number
         title = generate_title(issue_title=summary, issue_number=issue_number)
         body = generate_body(
@@ -255,8 +282,8 @@ def _open_pr_safe(
                 verification="Verification passed.",
             )
         )
-        head = f"agent/{ctx.run_id}"
-        opened = open_pr(github, ctx.job.repo, title=title, head=head, body=body)
+        _commit_and_push_pr_branch(ctx, git_runner, branch, issue_number, events)
+        opened = open_pr(github, ctx.job.repo, title=title, head=branch, body=body)
         if opened.number is not None:
             apply_outcome_labels(github, ctx.job.repo, opened.number, "succeeded")
         events.record("pr_opened", f"opened PR {opened.url}", {"url": opened.url})
@@ -264,6 +291,51 @@ def _open_pr_safe(
     except Exception as exc:  # PR authoring is best-effort at the boundary
         events.record("pr", f"PR authoring failed: {exc}")
         return None
+
+
+def _prepare_pr_branch(ctx: RuntimeContext, git_runner: Any, events: EventLog) -> str:
+    """Ensure the workspace is a checkout and move edits onto a PR branch."""
+    from .github.branches import create_branch
+    from .github.clone import clone_repo
+
+    if not (ctx.workspace / ".git").exists():
+        token = ctx.config.github_installation_token
+        if not token:
+            raise SandboxError("cannot clone repo without a GitHub installation token")
+        clone_repo(git_runner, ctx.job.repo, token, ctx.workspace, depth=None)
+        events.record("git", "cloned target repository")
+
+    branch = f"agent/{ctx.run_id}"
+    res = git_runner.run(["rev-parse", "--verify", branch], cwd=ctx.workspace)
+    if res.returncode == 0:
+        checkout = git_runner.run(["checkout", branch], cwd=ctx.workspace)
+        if checkout.returncode != 0:
+            raise SandboxError(f"cannot checkout existing branch {branch}")
+    else:
+        create_branch(git_runner, ctx.workspace, branch)
+    events.record("git", f"using PR branch {branch}")
+    return branch
+
+
+def _commit_and_push_pr_branch(
+    ctx: RuntimeContext,
+    git_runner: Any,
+    branch: str,
+    issue_number: int | None,
+    events: EventLog,
+) -> None:
+    from .github.branches import push_branch
+    from .github.commits import commit_all
+
+    message = (
+        f"fix: address issue #{issue_number}"
+        if issue_number is not None
+        else f"fix: apply agent changes for {ctx.run_id}"
+    )
+    sha = commit_all(git_runner, ctx.workspace, message)
+    events.record("git", f"committed {sha[:12]}")
+    push_branch(git_runner, ctx.workspace, branch, protected={"main", "master"})
+    events.record("git", f"pushed PR branch {branch}")
 
 
 def _persist(

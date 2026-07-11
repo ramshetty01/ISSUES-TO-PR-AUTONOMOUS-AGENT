@@ -14,7 +14,7 @@ and enforced by the dispatcher's protection gate.
 | Require pull requests before merging | `requirePullRequest: true` | The agent's changes must be reviewed, not pushed to the branch |
 | At least one approving review | `minApprovals: 1` | A human signs off before merge |
 | Disallow force pushes | `disallowForcePush: true` | History cannot be rewritten (matches the no-force-push [hard reject](safety-policy.md)) |
-| Restrict direct pushes | `restrictDirectPush: true` | Everything goes through a PR, including the App |
+| Restrict direct pushes | `restrictDirectPush: false` by default | Recommended for stricter repos, but not required because the worker creates a feature branch and opens a PR instead of pushing to the default branch |
 
 The recommended required status check is **`ci-passed`** (see
 [CI verification gates](ci-verification-gates.md)), and enabling "include

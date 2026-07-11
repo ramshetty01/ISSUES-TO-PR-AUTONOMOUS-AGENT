@@ -36,6 +36,35 @@ Resource identifiers (`SQS_QUEUE_URL`, `SQS_DLQ_URL`, `DYNAMODB_BUDGET_TABLE`,
 `S3_ARTIFACTS_BUCKET`) point at real ARNs/names instead of the LocalStack ones.
 See [`.env.example`](../.env.example) for the full list.
 
+## Local baseline before migrating
+
+Before swapping endpoints, prove the exact same workflow locally:
+
+```bash
+make up
+make seed
+docker compose exec localstack awslocal sqs list-queues
+docker compose exec localstack awslocal dynamodb list-tables
+docker compose exec localstack awslocal s3 ls
+make worker-image
+```
+
+LocalStack should expose:
+
+- `itpr-jobs` and its DLQ.
+- `itpr-budget-ledger`.
+- `itpr-artifacts`.
+
+Then run a labeled-issue flow through the GitHub App, or run one normalized job
+through the same worker image:
+
+```bash
+./scripts/run-local-worker.sh path/to/job.json
+```
+
+This keeps cloud migration focused on infrastructure and credentials. If Track A
+or the local worker path is failing, fix that before introducing real AWS.
+
 ## What must change for real AWS
 
 1. **Credentials.** Drop the static `test`/`test` keys; grant the compute role
@@ -51,6 +80,26 @@ See [`.env.example`](../.env.example) for the full list.
    [residual risks](../security/threat-model/residual-risks.md).
 4. **Egress.** Restrict the worker's network to GitHub, the LLM providers, and
    the artifact bucket.
+5. **Secrets.** Move GitHub App keys, Langfuse keys, provider keys, and webhook
+   secrets out of `.env` and into the target secret manager for the compute
+   platform.
+6. **Webhook ingress.** Replace smee.io with the production GitHub App webhook
+   URL. Keep the same `GITHUB_WEBHOOK_SECRET` validation behavior.
+7. **Policy data.** Carry over `policies/repo-allowlist.yaml`,
+   `policies/allowed-labels.yaml`, and budget policy values. Production remains
+   deny-by-default.
+
+## Production readiness checklist
+
+- Track A smoke eval passes locally with the `mock` provider.
+- A local worker-image run succeeds against LocalStack.
+- Target repositories are allowlisted and have branch protection.
+- GitHub App permissions match
+  [github-app-permissions.md](github-app-permissions.md).
+- AWS queues, table, bucket, IAM roles, and redrive policy are provisioned.
+- `AWS_ENDPOINT_URL` is unset in production.
+- Langfuse is reachable from the worker and dashboard.
+- Dashboard is served on a port or domain that does not collide with Langfuse.
 
 ## Why it stays cheap
 

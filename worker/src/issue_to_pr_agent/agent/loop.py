@@ -32,13 +32,15 @@ class AgentResult:
     state: AgentState
 
 
-def _messages(state: AgentState, issue: str) -> list[Message]:
+def _messages(state: AgentState, issue: str, registry: ToolRegistry) -> list[Message]:
     recent = "\n".join(state.observations[-8:])
+    tools = json.dumps(registry.schemas(), indent=2)
     return [
         Message("system", planner._load("system.md")),
         Message(
             "user",
             f"## Issue\n{issue}\n\n## Plan\n{state.plan}\n\n"
+            f"## Available tools\n{tools}\n\n"
             f"## Recent observations\n{recent}\n\n{_ACTION_INSTRUCTION}",
         ),
     ]
@@ -66,7 +68,7 @@ def run_agent(
             break
 
         state.turns += 1
-        response = llm.complete(_messages(state, issue))
+        response = llm.complete(_messages(state, issue, registry), max_tokens=16384)
         action = parse_action(response.text)
 
         if action.kind == "finish":

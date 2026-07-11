@@ -17,7 +17,8 @@ cannot merge unchecked. This document covers the CI layer in
 | [`eval-internal.yml`](../.github/workflows/eval-internal.yml) | every PR | Mock-provider **zero-token** smoke eval over the `smoke` subset |
 | [`release.yml`](../.github/workflows/release.yml) | tag `v*.*.*` | Re-verify, build + push image to GHCR, draft release |
 
-Runtimes are pinned: Node 20, pnpm 9, Python 3.11.
+Runtimes are pinned: Node 24 in CI, pnpm 9, Python 3.11. Local and container
+development require Node >=22, matching the root `engines` field.
 
 ## The zero-token eval gate
 

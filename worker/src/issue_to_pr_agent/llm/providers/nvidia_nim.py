@@ -25,11 +25,14 @@ class OpenAICompatProvider(Provider):
         api_key: str,
         base_url: str,
         model: str,
+        *,
+        extra_body: dict[str, object] | None = None,
         transport: Transport = default_transport,
     ) -> None:
         self._key = api_key
         self._base = base_url.rstrip("/")
         self._model = model
+        self._extra_body = extra_body or {}
         self._transport = transport
 
     def complete(
@@ -44,6 +47,7 @@ class OpenAICompatProvider(Provider):
                 "messages": [{"role": m.role, "content": m.content} for m in messages],
                 "max_tokens": max_tokens,
                 "temperature": temperature,
+                **self._extra_body,
             },
         )
         if status == 429:
@@ -68,8 +72,10 @@ class NvidiaNimProvider(OpenAICompatProvider):
     def __init__(
         self,
         api_key: str,
-        model: str = "meta/llama-3.1-70b-instruct",
+        model: str = "qwen/qwen3.5-122b-a10b",
         base_url: str = "https://integrate.api.nvidia.com/v1",
+        extra_body: dict[str, object] | None = None,
         transport: Transport = default_transport,
     ) -> None:
-        super().__init__(api_key, base_url, model, transport)
+        payload = extra_body or {"temperature": 0.60, "top_p": 0.95}
+        super().__init__(api_key, base_url, model, extra_body=payload, transport=transport)

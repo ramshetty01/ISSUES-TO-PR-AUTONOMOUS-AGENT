@@ -22,9 +22,21 @@ describe("loadConfig", () => {
       ...validSecrets,
       PORT: "8080",
       LLM_PROVIDER_ORDER: "nvidia_nim, groq ,mock",
+      NVIDIA_NIM_MODEL: "qwen/qwen3.5-122b-a10b",
     });
     expect(cfg.PORT).toBe(8080);
     expect(cfg.LLM_PROVIDER_ORDER).toEqual(["nvidia_nim", "groq", "mock"]);
+    expect(cfg.NVIDIA_NIM_MODEL).toBe("qwen/qwen3.5-122b-a10b");
+  });
+
+  it("normalizes escaped private-key newlines from .env files", () => {
+    const cfg = loadConfig({
+      ...validSecrets,
+      GITHUB_APP_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\\nabc\\n-----END PRIVATE KEY-----\\n",
+    });
+    expect(cfg.GITHUB_APP_PRIVATE_KEY).toBe(
+      "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n",
+    );
   });
 
   it("rejects a missing required secret with a clear, aggregated message", () => {
