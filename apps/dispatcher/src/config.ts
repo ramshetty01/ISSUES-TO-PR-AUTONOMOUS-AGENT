@@ -5,6 +5,7 @@ export interface DispatcherConfig {
   queueUrl: string;
   dlqUrl: string;
   workerImage: string;
+  workerNetwork: string;
   maxReceives: number;
   pollWaitSeconds: number;
   workerTimeoutMs: number;
@@ -15,7 +16,8 @@ export function loadDispatcherConfig(source?: NodeJS.ProcessEnv): DispatcherConf
   return {
     queueUrl: cfg.SQS_QUEUE_URL,
     dlqUrl: cfg.SQS_DLQ_URL,
-    workerImage: "itpr-worker",
+    workerImage: source?.WORKER_IMAGE_TAG ?? process.env.WORKER_IMAGE_TAG ?? "itpr-worker:local",
+    workerNetwork: source?.WORKER_DOCKER_NETWORK ?? process.env.WORKER_DOCKER_NETWORK ?? "itpr-local",
     maxReceives: 5,
     pollWaitSeconds: 10,
     workerTimeoutMs: 15 * 60_000,

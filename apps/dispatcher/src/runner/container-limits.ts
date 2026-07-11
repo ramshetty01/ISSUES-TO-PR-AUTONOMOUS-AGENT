@@ -30,7 +30,7 @@ export const DEFAULT_LIMITS: ContainerLimits = {
   readonlyRootfs: true,
   capDrop: ["ALL"],
   securityOpt: ["no-new-privileges"],
-  tmpfs: ["/tmp", "/workspace"],
+  tmpfs: ["/tmp:rw,exec,nosuid,mode=1777", "/workspace:rw,exec,nosuid,mode=1777"],
 };
 
 /** Translate limits into `docker run` argument tokens. */

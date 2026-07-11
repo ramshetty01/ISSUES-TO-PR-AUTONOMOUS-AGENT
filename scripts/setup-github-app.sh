@@ -75,7 +75,7 @@ set_env "GITHUB_WEBHOOK_SECRET" "${WEBHOOK_SECRET:-}"
 
 if [[ -n "${PEM_PATH:-}" && -f "${PEM_PATH}" ]]; then
   # Store the PEM as a single-line value with escaped newlines (config reverses this).
-  PEM_ONE_LINE="$(awk 'BEGIN{ORS="\\n"} {print}' "${PEM_PATH}")"
+  PEM_ONE_LINE="$(awk '{gsub(/\r$/, ""); printf "%s\\\\n", $0}' "${PEM_PATH}")"
   set_env "GITHUB_APP_PRIVATE_KEY" "\"${PEM_ONE_LINE}\""
 fi
 

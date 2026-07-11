@@ -67,6 +67,7 @@ async function main(): Promise<void> {
       const token = await getInstallationToken(app, job.installationId);
       const handle = runDockerWorker(job, {
         image: dcfg.workerImage,
+        network: dcfg.workerNetwork,
         installationToken: token.token,
         timeoutMs: dcfg.workerTimeoutMs,
       });

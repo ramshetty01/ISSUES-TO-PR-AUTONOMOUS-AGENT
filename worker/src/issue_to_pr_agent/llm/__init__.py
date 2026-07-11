@@ -33,7 +33,12 @@ def build_providers(config: WorkerConfig) -> list[Provider]:
         if name == "mock":
             providers.append(MockProvider())
         elif name == "nvidia_nim" and config.nvidia_nim_api_key:
-            providers.append(NvidiaNimProvider(config.nvidia_nim_api_key))
+            providers.append(
+                NvidiaNimProvider(
+                    config.nvidia_nim_api_key,
+                    model=config.nvidia_nim_model,
+                )
+            )
         elif name == "gemini" and config.gemini_api_key:
             providers.append(GeminiProvider(config.gemini_api_key))
         elif name == "groq" and config.groq_api_key:

@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   redact,
   redactDeep,
@@ -6,6 +8,18 @@ import {
   POSITIVE_VECTORS,
   NEGATIVE_VECTORS,
 } from "../src/index.js";
+
+interface SecurityVector {
+  name: string;
+  inputParts: string[];
+  expectedRedacted: string;
+}
+
+function loadSecurityVectors(): SecurityVector[] {
+  const path = resolve(process.cwd(), "../../security/secret-redaction-test-cases.json");
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as { cases: SecurityVector[] };
+  return parsed.cases;
+}
 
 describe("redact — positive vectors", () => {
   for (const v of POSITIVE_VECTORS) {
@@ -21,6 +35,14 @@ describe("redact — negative vectors (no false positives)", () => {
   for (const s of NEGATIVE_VECTORS) {
     it(`leaves benign text unchanged: "${s.slice(0, 24)}..."`, () => {
       expect(redact(s, { pii: true })).toBe(s);
+    });
+  }
+});
+
+describe("redact — security fixture vectors", () => {
+  for (const v of loadSecurityVectors()) {
+    it(`matches security fixture: ${v.name}`, () => {
+      expect(redact(v.inputParts.join(""))).toBe(v.expectedRedacted);
     });
   }
 });

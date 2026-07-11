@@ -15,6 +15,7 @@ import { waitForExit, type ChildLike, type ExitStatus } from "./worker-status.js
 
 export interface RunOptions {
   image: string;
+  network?: string;
   installationToken: string;
   limits?: ContainerLimits;
   /** Hard timeout in ms; the container is killed past this. */
@@ -49,7 +50,10 @@ export function buildRunArgs(args: {
 }
 
 export function runDockerWorker(job: Job, opts: RunOptions): RunHandle {
-  const limits = opts.limits ?? DEFAULT_LIMITS;
+  const limits = {
+    ...(opts.limits ?? DEFAULT_LIMITS),
+    ...(opts.network ? { network: opts.network } : {}),
+  };
   const { env, keys } = buildWorkerEnv({
     job,
     installationToken: opts.installationToken,

@@ -11,3 +11,4 @@ Return JSON:
 ```
 
 Keep the plan minimal — only the files that must change.
+Choose at least one concrete target file and one concrete edit path, not just a diagnosis.

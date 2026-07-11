@@ -6,7 +6,7 @@ from .observation_budget import ObservationBudget
 from .state import AgentState
 from .turn_budget import TurnBudget
 
-MAX_CONSECUTIVE_FAILURES = 3
+MAX_CONSECUTIVE_FAILURES = 5
 
 
 def should_stop(

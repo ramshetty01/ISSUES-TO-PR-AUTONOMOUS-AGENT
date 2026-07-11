@@ -19,4 +19,4 @@ def plan(llm: LLMClient, issue: str, context: str) -> str:
         Message("system", _load("system.md")),
         Message("user", f"{_load('plan.md')}\n\n## Issue\n{issue}\n\n## Context\n{context}"),
     ]
-    return llm.complete(messages, max_tokens=512).text
+    return llm.complete(messages, max_tokens=16384).text

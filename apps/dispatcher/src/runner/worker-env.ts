@@ -25,6 +25,7 @@ export function buildWorkerEnv(input: WorkerEnvInput): WorkerEnv {
   const env: Record<string, string> = {
     ITPR_JOB: JSON.stringify(input.job),
     ITPR_JOB_ID: input.job.id,
+    ITPR_SANDBOX_MODE: "process",
     GITHUB_INSTALLATION_TOKEN: input.installationToken,
     AWS_ENDPOINT_URL: cfg.AWS_ENDPOINT_URL,
     AWS_REGION: cfg.AWS_REGION,
@@ -34,6 +35,7 @@ export function buildWorkerEnv(input: WorkerEnvInput): WorkerEnv {
     LANGFUSE_HOST: cfg.LANGFUSE_HOST,
     OLLAMA_HOST: cfg.OLLAMA_HOST,
     LLM_PROVIDER_ORDER: cfg.LLM_PROVIDER_ORDER.join(","),
+    NVIDIA_NIM_MODEL: cfg.NVIDIA_NIM_MODEL ?? "qwen/qwen3.5-122b-a10b",
   };
   // Forward optional provider keys only when present.
   for (const k of ["NVIDIA_NIM_API_KEY", "GEMINI_API_KEY", "GROQ_API_KEY"] as const) {
