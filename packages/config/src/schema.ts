@@ -47,6 +47,8 @@ export const configSchema = z.object({
   LLM_PROVIDER_ORDER: z
     .string()
     .transform((s) => s.split(",").map((x) => x.trim()).filter(Boolean)),
+  OPENROUTER_API_KEY: z.string().optional(),
+  OPENROUTER_MODEL: z.string().optional(),
   NVIDIA_NIM_API_KEY: z.string().optional(),
   NVIDIA_NIM_MODEL: z.string().optional(),
   GEMINI_API_KEY: z.string().optional(),

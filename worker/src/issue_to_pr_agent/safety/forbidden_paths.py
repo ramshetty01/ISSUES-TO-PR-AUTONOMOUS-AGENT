@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import cast
 
 from .refusal import refuse
 
@@ -33,4 +34,4 @@ def load_forbidden(path: str | Path) -> list[str]:
     import yaml
 
     doc = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-    return doc.get("forbidden", DEFAULT_FORBIDDEN)
+    return cast(list[str], doc.get("forbidden", DEFAULT_FORBIDDEN))

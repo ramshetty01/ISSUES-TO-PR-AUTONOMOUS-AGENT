@@ -71,6 +71,14 @@ def test_parse_action_variants() -> None:
     assert parse_action("not json").kind == "invalid"
 
 
+def test_registry_keeps_git_finalization_out_of_model_tools() -> None:
+    registry = build_default_registry()
+    schema_names = {schema["name"] for schema in registry.schemas()}
+    assert "git_commit" in registry.names()
+    assert "git_commit" not in schema_names
+    assert "git_diff" in schema_names
+
+
 def test_loop_writes_then_finishes(tmp_path: Path) -> None:
     llm = client([
         "PLAN: write the file",
@@ -108,7 +116,7 @@ def test_loop_exposes_tool_contract_to_model(tmp_path: Path) -> None:
     assert "## Available tools" in prompt
     assert '"name": "edit_file"' in prompt
     assert '"old"' in prompt
-    assert max_tokens == 16384
+    assert max_tokens == 1024
 
 
 def test_loop_tool_failure_is_recoverable(tmp_path: Path) -> None:

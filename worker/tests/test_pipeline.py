@@ -17,7 +17,7 @@ from issue_to_pr_agent.job import Job
 from issue_to_pr_agent.llm.client import LLMClient
 from issue_to_pr_agent.llm.providers.mock import MockProvider
 from issue_to_pr_agent.llm.router import Router
-from issue_to_pr_agent.pipeline import run_pipeline
+from issue_to_pr_agent.pipeline import _issue_text, run_pipeline
 from issue_to_pr_agent.runtime_context import RuntimeContext
 from issue_to_pr_agent.sandbox.base import Sandbox
 from issue_to_pr_agent.sandbox.command_runner import CommandResult
@@ -122,6 +122,15 @@ def test_pipeline_runs_end_to_end(tmp_path: Path) -> None:
     assert (ws / ".itpr" / "run-int-1" / "summary.json").is_file()
     assert (ws / ".itpr" / "run-int-1.tar.gz").is_file()
 
+
+def test_issue_text_uses_content_captured_in_job(tmp_path: Path) -> None:
+    runtime = _ctx(tmp_path)
+    runtime.job.issue_title = "Fix duration formatting"
+    runtime.job.issue_body = "Never render 60s."
+
+    assert _issue_text(runtime, None) == (
+        "Fix duration formatting\n\nNever render 60s."
+    )
 
 def test_pipeline_refuses_diff_with_secret(tmp_path: Path) -> None:
     ws = _repo(tmp_path)

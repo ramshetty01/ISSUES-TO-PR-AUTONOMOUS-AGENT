@@ -35,10 +35,11 @@ export function buildWorkerEnv(input: WorkerEnvInput): WorkerEnv {
     LANGFUSE_HOST: cfg.LANGFUSE_HOST,
     OLLAMA_HOST: cfg.OLLAMA_HOST,
     LLM_PROVIDER_ORDER: cfg.LLM_PROVIDER_ORDER.join(","),
+    OPENROUTER_MODEL: cfg.OPENROUTER_MODEL ?? "tencent/hy3:free",
     NVIDIA_NIM_MODEL: cfg.NVIDIA_NIM_MODEL ?? "qwen/qwen3.5-122b-a10b",
   };
   // Forward optional provider keys only when present.
-  for (const k of ["NVIDIA_NIM_API_KEY", "GEMINI_API_KEY", "GROQ_API_KEY"] as const) {
+  for (const k of ["OPENROUTER_API_KEY", "NVIDIA_NIM_API_KEY", "GEMINI_API_KEY", "GROQ_API_KEY"] as const) {
     const v = input.source?.[k] ?? process.env[k];
     if (v) env[k] = v;
   }

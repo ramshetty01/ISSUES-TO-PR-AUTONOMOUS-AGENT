@@ -12,6 +12,8 @@ export interface BuildJobInput {
   installationId: number;
   trigger: TriggerKind;
   issueNumber?: number;
+  issueTitle?: string;
+  issueBody?: string;
   prNumber?: number;
   labels: string[];
   /** Head sha when known (PR events); the worker resolves it otherwise. */
@@ -32,6 +34,8 @@ export function buildJob(input: BuildJobInput): Job {
     createdAt,
   };
   if (input.issueNumber !== undefined) job.issueNumber = input.issueNumber;
+  if (input.issueTitle !== undefined) job.issueTitle = input.issueTitle;
+  if (input.issueBody !== undefined) job.issueBody = input.issueBody;
   if (input.prNumber !== undefined) job.prNumber = input.prNumber;
   return job;
 }

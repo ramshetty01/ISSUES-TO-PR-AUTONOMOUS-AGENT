@@ -18,6 +18,7 @@ from .providers import (
     GroqProvider,
     MockProvider,
     NvidiaNimProvider,
+    OpenRouterProvider,
     OllamaProvider,
 )
 from .rate_limiter import ProviderLimits, RateLimiter, load_provider_limits
@@ -32,6 +33,13 @@ def build_providers(config: WorkerConfig) -> list[Provider]:
     for name in config.provider_order:
         if name == "mock":
             providers.append(MockProvider())
+        elif name == "openrouter" and config.openrouter_api_key:
+            providers.append(
+                OpenRouterProvider(
+                    config.openrouter_api_key,
+                    model=config.openrouter_model,
+                )
+            )
         elif name == "nvidia_nim" and config.nvidia_nim_api_key:
             providers.append(
                 NvidiaNimProvider(
@@ -69,6 +77,7 @@ __all__ = [
     "TokenUsage",
     "MockProvider",
     "NvidiaNimProvider",
+    "OpenRouterProvider",
     "GroqProvider",
     "GeminiProvider",
     "OllamaProvider",

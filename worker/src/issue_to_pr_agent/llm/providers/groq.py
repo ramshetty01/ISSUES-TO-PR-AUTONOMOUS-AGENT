@@ -16,4 +16,4 @@ class GroqProvider(OpenAICompatProvider):
         base_url: str = "https://api.groq.com/openai/v1",
         transport: Transport = default_transport,
     ) -> None:
-        super().__init__(api_key, base_url, model, transport)
+        super().__init__(api_key, base_url, model, transport=transport)

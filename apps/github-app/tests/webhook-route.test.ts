@@ -15,7 +15,12 @@ function issuesLabeledPayload() {
     repository: { name: "widgets", owner: { login: "acme" } },
     sender: { login: "alice", type: "User" },
     label: { name: "agent-fix" },
-    issue: { number: 7, labels: [{ name: "agent-fix" }] },
+    issue: {
+      number: 7,
+      title: "Fix duration formatting",
+      body: "Never render 60s.",
+      labels: [{ name: "agent-fix" }],
+    },
   };
 }
 

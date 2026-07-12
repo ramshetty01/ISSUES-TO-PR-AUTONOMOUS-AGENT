@@ -51,6 +51,8 @@ describe("@itpr/shared-types", () => {
       installationId: 1,
       repo: { owner: "a", name: "b" },
       issueNumber: 1,
+      issueTitle: "Fix a bug",
+      issueBody: "Detailed reproduction",
       label: "agent-fix",
       labels: ["agent-fix"],
       actor: { login: "u", type: "User" },

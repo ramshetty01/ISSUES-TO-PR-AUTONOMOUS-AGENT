@@ -54,7 +54,14 @@ class OpenAICompatProvider(Provider):
             raise RateLimitError(f"{self.name} rate limited")
         if status // 100 != 2 or not data:
             raise ProviderError(f"{self.name} error ({status})")
-        text = data["choices"][0]["message"]["content"]
+        message = data["choices"][0]["message"]
+        text = (
+            message.get("content")
+            or message.get("reasoning_content")
+            or message.get("reasoning")
+        )
+        if not isinstance(text, str) or not text.strip():
+            raise ProviderError(f"{self.name} returned no message content")
         usage = data.get("usage", {})
         return Completion(
             text,

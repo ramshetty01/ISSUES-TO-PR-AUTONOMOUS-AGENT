@@ -33,6 +33,7 @@ class Tool:
     description: str
     handler: ToolHandler
     schema: dict[str, Any]
+    expose_to_llm: bool = True
 
 
 class ToolError(Exception):
@@ -54,6 +55,7 @@ class ToolRegistry:
         return [
             {"name": t.name, "description": t.description, "parameters": t.schema}
             for t in self._tools.values()
+            if t.expose_to_llm
         ]
 
     def call(self, tool_name: str, ctx: ToolContext, /, **args: Any) -> Any:
@@ -67,8 +69,8 @@ def build_default_registry() -> ToolRegistry:
     from . import (
         edit_file,
         git_apply_patch,
-        git_commit,
         git_diff,
+        git_commit,
         git_status,
         github_comment,
         list_files,
@@ -83,7 +85,7 @@ def build_default_registry() -> ToolRegistry:
     from .schemas import TOOL_SCHEMAS
 
     reg = ToolRegistry()
-    modules = {
+    modules: dict[str, ToolHandler] = {
         "read_file": read_file.read_file,
         "write_file": write_file.write_file,
         "edit_file": edit_file.edit_file,
@@ -101,5 +103,13 @@ def build_default_registry() -> ToolRegistry:
     }
     for name, handler in modules.items():
         schema = TOOL_SCHEMAS[name]
-        reg.register(Tool(name, schema["description"], handler, schema["parameters"]))
+        reg.register(
+            Tool(
+                name,
+                schema["description"],
+                handler,
+                schema["parameters"],
+                expose_to_llm=name != "git_commit",
+            )
+        )
     return reg

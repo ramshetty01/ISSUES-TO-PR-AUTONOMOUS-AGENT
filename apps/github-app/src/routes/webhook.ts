@@ -38,7 +38,13 @@ interface RawPayload {
   installation?: { id?: number };
   repository?: { name?: string; owner?: { login?: string } };
   sender?: { login?: string; type?: string };
-  issue?: { number?: number; labels?: Array<{ name?: string }>; pull_request?: unknown };
+  issue?: {
+    number?: number;
+    title?: string;
+    body?: string | null;
+    labels?: Array<{ name?: string }>;
+    pull_request?: unknown;
+  };
   label?: { name?: string };
   comment?: { body?: string };
 }
@@ -66,6 +72,8 @@ export function parseIssueLabeled(
     installationId: p.installation?.id ?? 0,
     repo: repoOf(p),
     issueNumber: p.issue.number ?? 0,
+    issueTitle: p.issue.title ?? "",
+    issueBody: p.issue.body ?? "",
     label: p.label?.name ?? "",
     labels: (p.issue.labels ?? []).map((l) => l.name ?? ""),
     actor: actorOf(p),

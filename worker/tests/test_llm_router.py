@@ -19,7 +19,11 @@ from issue_to_pr_agent.llm import (
     load_provider_limits,
 )
 from issue_to_pr_agent.llm.provider_base import ProviderError, RateLimitError
-from issue_to_pr_agent.llm.providers import MockProvider, NvidiaNimProvider
+from issue_to_pr_agent.llm.providers import (
+    MockProvider,
+    NvidiaNimProvider,
+    OpenRouterProvider,
+)
 from issue_to_pr_agent.config import WorkerConfig
 
 MSGS = [Message("system", "you are a bot"), Message("user", "fix the bug")]
@@ -135,6 +139,41 @@ def test_openai_compat_provider_shapes_request() -> None:
     assert '"top_p": 0.95' in payload
 
 
+def test_openrouter_provider_enables_reasoning() -> None:
+    calls = []
+
+    def fake_transport(method, url, headers, body):
+        calls.append((url, headers, body))
+        return 200, {
+            "choices": [{"message": {"content": '{"finish":true}'}}],
+            "usage": {},
+        }
+
+    result = OpenRouterProvider("or_key", transport=fake_transport).complete(MSGS)
+    assert result.text == '{"finish":true}'
+    url, headers, body = calls[0]
+    assert url == "https://openrouter.ai/api/v1/chat/completions"
+    assert headers["Authorization"] == "Bearer or_key"
+    payload = body.decode()
+    assert '"model": "tencent/hy3:free"' in payload
+    assert '"reasoning": {"enabled": true, "max_tokens": 256}' in payload
+
+
+def test_openrouter_retries_transient_provider_errors() -> None:
+    attempts = 0
+
+    def flaky_transport(method, url, headers, body):
+        nonlocal attempts
+        attempts += 1
+        if attempts < 3:
+            return 503, {"error": {"message": "temporarily unavailable"}}
+        return 200, {"choices": [{"message": {"content": '{"finish":true}'}}]}
+
+    result = OpenRouterProvider("or_key", transport=flaky_transport).complete(MSGS)
+    assert result.text == '{"finish":true}'
+    assert attempts == 3
+
+
 def test_openai_compat_maps_429_to_rate_limit() -> None:
     def fake_transport(method, url, headers, body):
         return 429, {"error": "rate limited"}
@@ -142,6 +181,17 @@ def test_openai_compat_maps_429_to_rate_limit() -> None:
     p = NvidiaNimProvider("k", transport=fake_transport)
     with pytest.raises(RateLimitError):
         p.complete(MSGS)
+
+
+def test_nvidia_nim_accepts_reasoning_content_when_content_is_absent() -> None:
+    def fake_transport(method, url, headers, body):
+        return 200, {
+            "choices": [{"message": {"reasoning_content": '{"finish":true}'}}],
+            "usage": {},
+        }
+
+    result = NvidiaNimProvider("k", transport=fake_transport).complete(MSGS)
+    assert result.text == '{"finish":true}'
 
 
 def test_response_parser_extracts_code_and_json() -> None:
