@@ -4,7 +4,7 @@
 export function formatDuration(ms: number): string {
   if (!Number.isFinite(ms) || ms < 0) return "—";
   if (ms < 1_000) return `${Math.round(ms)}ms`;
-  const totalSeconds = Math.floor(ms / 1_000);
+  const totalSeconds = Math.round(ms / 1_000);
   if (totalSeconds < 60) {
     const s = ms / 1_000;
     return `${s.toFixed(s < 10 ? 1 : 0)}s`;

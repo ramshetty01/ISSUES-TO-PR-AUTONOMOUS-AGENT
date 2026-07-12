@@ -44,6 +44,8 @@ describe("formatDuration", () => {
   it("scales units", () => {
     expect(formatDuration(820)).toBe("820ms");
     expect(formatDuration(1_200)).toBe("1.2s");
+    expect(formatDuration(59_000)).toBe("59s");
+    expect(formatDuration(59_999)).toBe("1m 0s");
     expect(formatDuration(184_000)).toBe("3m 4s");
     expect(formatDuration(3_720_000)).toBe("1h 2m");
   });
