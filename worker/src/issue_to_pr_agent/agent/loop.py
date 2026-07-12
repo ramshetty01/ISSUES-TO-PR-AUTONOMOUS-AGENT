@@ -105,7 +105,13 @@ def run_agent(
     )
 
 
-def action_json(tool: str | None = None, args: dict | None = None, *, finish: bool = False, success: bool = False) -> str:
+def action_json(
+    tool: str | None = None,
+    args: dict[str, object] | None = None,
+    *,
+    finish: bool = False,
+    success: bool = False,
+) -> str:
     """Helper to build an action JSON string (used by scripted providers/tests)."""
     if finish:
         return json.dumps({"finish": True, "success": success})

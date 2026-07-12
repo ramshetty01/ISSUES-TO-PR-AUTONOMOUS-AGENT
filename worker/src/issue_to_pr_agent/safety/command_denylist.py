@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from typing import cast
 
 from .refusal import refuse
 
@@ -37,4 +38,4 @@ def load_denylist(path: str | Path) -> list[str]:
     import yaml
 
     doc = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-    return doc.get("deny", DEFAULT_DENYLIST)
+    return cast(list[str], doc.get("deny", DEFAULT_DENYLIST))

@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import cast
 
 DEFAULT_FORBIDDEN = [
     ".github/workflows/",
@@ -52,4 +53,4 @@ def load_forbidden_paths(path: str | Path) -> list[str]:
     import yaml
 
     doc = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-    return doc.get("forbidden", DEFAULT_FORBIDDEN)
+    return cast(list[str], doc.get("forbidden", DEFAULT_FORBIDDEN))

@@ -72,9 +72,11 @@ def test_parse_action_variants() -> None:
 
 
 def test_registry_keeps_git_finalization_out_of_model_tools() -> None:
-    names = build_default_registry().names()
-    assert "git_commit" not in names
-    assert "git_diff" in names
+    registry = build_default_registry()
+    schema_names = {schema["name"] for schema in registry.schemas()}
+    assert "git_commit" in registry.names()
+    assert "git_commit" not in schema_names
+    assert "git_diff" in schema_names
 
 
 def test_loop_writes_then_finishes(tmp_path: Path) -> None:

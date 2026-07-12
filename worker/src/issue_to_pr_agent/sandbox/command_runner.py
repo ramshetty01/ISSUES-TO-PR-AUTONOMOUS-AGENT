@@ -34,5 +34,7 @@ def run_command(
             check=False,
         )
     except subprocess.TimeoutExpired as exc:
-        return CommandResult(124, exc.stdout or "", exc.stderr or "", timed_out=True)
+        stdout = exc.stdout.decode() if isinstance(exc.stdout, bytes) else exc.stdout or ""
+        stderr = exc.stderr.decode() if isinstance(exc.stderr, bytes) else exc.stderr or ""
+        return CommandResult(124, stdout, stderr, timed_out=True)
     return CommandResult(proc.returncode, proc.stdout, proc.stderr)

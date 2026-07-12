@@ -7,8 +7,9 @@ without network access. The default transport uses urllib.
 from __future__ import annotations
 
 import json
+import urllib.error
 import urllib.request
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 from ..errors import WorkerError
 from ..job import Repo
@@ -27,7 +28,7 @@ def default_transport(
         with urllib.request.urlopen(req) as resp:  # noqa: S310 - https api only
             payload = resp.read()
             return resp.status, (json.loads(payload) if payload else None)
-    except urllib.error.HTTPError as exc:  # type: ignore[attr-defined]
+    except urllib.error.HTTPError as exc:
         payload = exc.read()
         return exc.code, (json.loads(payload) if payload else None)
 
@@ -68,7 +69,7 @@ class GitHubClient:
         )
         if status not in (200, 201):
             raise WorkerError(f"create pull failed ({status})")
-        return data
+        return cast(dict[str, Any], data)
 
     def add_labels(self, repo: Repo, issue_number: int, labels: list[str]) -> None:
         status, _ = self._request(
@@ -100,7 +101,7 @@ class GitHubClient:
         )
         if status not in (200, 201):
             raise WorkerError(f"create review failed ({status})")
-        return data
+        return cast(dict[str, Any], data)
 
     def create_comment(self, repo: Repo, issue_number: int, body: str) -> dict[str, Any]:
         status, data = self._request(
@@ -110,7 +111,7 @@ class GitHubClient:
         )
         if status not in (200, 201):
             raise WorkerError(f"create comment failed ({status})")
-        return data
+        return cast(dict[str, Any], data)
 
     def get_branch_protection(self, repo: Repo, branch: str) -> dict[str, Any] | None:
         status, data = self._request(
@@ -120,4 +121,4 @@ class GitHubClient:
             return None
         if status != 200:
             raise WorkerError(f"branch protection fetch failed ({status})")
-        return data
+        return cast(dict[str, Any], data)
