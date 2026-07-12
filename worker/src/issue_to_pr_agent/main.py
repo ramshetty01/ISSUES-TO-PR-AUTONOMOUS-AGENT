@@ -48,6 +48,7 @@ def run(ctx: RuntimeContext, budget: TimeBudget) -> int:
         result = run_pipeline(ctx, sandbox=sandbox, llm=llm, github=github, storage=storage)
     except WorkerError as exc:
         ctx.log_event(f"pipeline error: {exc}")
+        print(f"worker pipeline error: {exc}", file=sys.stderr)
         return 2
 
     ctx.log_event(f"run {ctx.run_id} finished: {result.summary.state}")

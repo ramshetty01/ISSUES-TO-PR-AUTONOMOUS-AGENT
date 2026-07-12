@@ -94,6 +94,8 @@ export async function handleIssueLabeled(
     installationId: event.installationId,
     trigger: "issue_labeled",
     issueNumber: event.issueNumber,
+    issueTitle: event.issueTitle,
+    issueBody: event.issueBody,
     labels: event.labels,
     ...(deps.now ? { now: deps.now } : {}),
   });

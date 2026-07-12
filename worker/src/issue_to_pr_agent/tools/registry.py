@@ -67,7 +67,6 @@ def build_default_registry() -> ToolRegistry:
     from . import (
         edit_file,
         git_apply_patch,
-        git_commit,
         git_diff,
         git_status,
         github_comment,
@@ -96,7 +95,6 @@ def build_default_registry() -> ToolRegistry:
         "git_status": git_status.git_status,
         "git_diff": git_diff.git_diff,
         "git_apply_patch": git_apply_patch.git_apply_patch,
-        "git_commit": git_commit.git_commit,
         "github_comment": github_comment.github_comment,
     }
     for name, handler in modules.items():

@@ -23,6 +23,8 @@ class WorkerConfig(BaseSettings):
 
     llm_provider_order: str = Field(default="mock", alias="LLM_PROVIDER_ORDER")
 
+    openrouter_api_key: str | None = Field(default=None, alias="OPENROUTER_API_KEY")
+    openrouter_model: str = Field(default="tencent/hy3:free", alias="OPENROUTER_MODEL")
     nvidia_nim_api_key: str | None = Field(default=None, alias="NVIDIA_NIM_API_KEY")
     nvidia_nim_model: str = Field(default="qwen/qwen3.5-122b-a10b", alias="NVIDIA_NIM_MODEL")
     gemini_api_key: str | None = Field(default=None, alias="GEMINI_API_KEY")

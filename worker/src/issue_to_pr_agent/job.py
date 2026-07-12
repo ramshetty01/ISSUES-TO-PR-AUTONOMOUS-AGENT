@@ -36,6 +36,8 @@ class Job(_CamelModel):
     labels: list[str] = []
     created_at: str = ""
     issue_number: int | None = None
+    issue_title: str = ""
+    issue_body: str = ""
     pr_number: int | None = None
 
     @classmethod

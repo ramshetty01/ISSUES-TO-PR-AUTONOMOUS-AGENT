@@ -72,6 +72,10 @@ def _issue_text(ctx: RuntimeContext, override: str | None) -> str:
     env = os.environ.get("ITPR_ISSUE_BODY")
     if env:
         return env
+    if ctx.job.issue_title or ctx.job.issue_body:
+        title = ctx.job.issue_title.strip()
+        body = ctx.job.issue_body.strip()
+        return f"{title}\n\n{body}".strip()
     num = ctx.job.issue_number or ctx.job.pr_number
     return f"Resolve issue #{num} in {ctx.job.repo.owner}/{ctx.job.repo.name}."
 
@@ -139,6 +143,11 @@ def run_pipeline(
             events.record(
                 "agent", f"agent finished: {result.stop_reason} ({result.turns} turns)"
             )
+            for index, action in enumerate(result.state.actions, start=1):
+                events.record(
+                    "agent_action",
+                    f"turn {index}: {action}",
+                )
 
         cost.record(
             _provider_name(llm),

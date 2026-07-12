@@ -63,6 +63,7 @@ describe("worker-env", () => {
     expect(env.GITHUB_INSTALLATION_TOKEN).toBe("ghs_secret");
     expect(env.ITPR_JOB_ID).toBe("d-1");
     expect(env.ITPR_SANDBOX_MODE).toBe("process");
+    expect(env.OPENROUTER_MODEL).toBe("tencent/hy3:free");
     expect(env.NVIDIA_NIM_MODEL).toBe("qwen/qwen3.5-122b-a10b");
     expect(env.AWS_ENDPOINT_URL).toContain("4566");
     expect(keys).toContain("GITHUB_INSTALLATION_TOKEN");

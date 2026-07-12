@@ -18,6 +18,9 @@ export interface Job {
   trigger: TriggerKind;
   /** Set when trigger === "issue_labeled". */
   issueNumber?: number;
+  /** Issue content captured from the webhook for deterministic worker prompts. */
+  issueTitle?: string;
+  issueBody?: string;
   /** Set when trigger === "pr_comment". */
   prNumber?: number;
   /** Head commit sha the worker should base its work on. */

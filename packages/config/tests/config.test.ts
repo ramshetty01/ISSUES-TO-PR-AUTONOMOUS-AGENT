@@ -21,11 +21,13 @@ describe("loadConfig", () => {
     const cfg = loadConfig({
       ...validSecrets,
       PORT: "8080",
-      LLM_PROVIDER_ORDER: "nvidia_nim, groq ,mock",
+      LLM_PROVIDER_ORDER: "openrouter, groq ,mock",
+      OPENROUTER_MODEL: "tencent/hy3:free",
       NVIDIA_NIM_MODEL: "qwen/qwen3.5-122b-a10b",
     });
     expect(cfg.PORT).toBe(8080);
-    expect(cfg.LLM_PROVIDER_ORDER).toEqual(["nvidia_nim", "groq", "mock"]);
+    expect(cfg.LLM_PROVIDER_ORDER).toEqual(["openrouter", "groq", "mock"]);
+    expect(cfg.OPENROUTER_MODEL).toBe("tencent/hy3:free");
     expect(cfg.NVIDIA_NIM_MODEL).toBe("qwen/qwen3.5-122b-a10b");
   });
 

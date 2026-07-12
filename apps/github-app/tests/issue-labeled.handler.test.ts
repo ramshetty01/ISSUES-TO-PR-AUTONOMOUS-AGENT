@@ -11,6 +11,8 @@ const baseEvent: IssueLabeledEvent = {
   installationId: 42,
   repo: { owner: "acme", name: "widgets" },
   issueNumber: 7,
+  issueTitle: "Fix duration formatting",
+  issueBody: "Never render 60s.",
   label: "agent-fix",
   labels: ["bug", "agent-fix"],
   actor: { login: "alice", type: "User" },
@@ -43,6 +45,8 @@ describe("handleIssueLabeled", () => {
     const job = enqueue.mock.calls[0]![0];
     expect(job.trigger).toBe("issue_labeled");
     expect(job.issueNumber).toBe(7);
+    expect(job.issueTitle).toBe("Fix duration formatting");
+    expect(job.issueBody).toBe("Never render 60s.");
   });
 
   it("skips a non-allowlisted repo", async () => {

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 
+from ..errors import LLMError
 from ..llm.client import LLMClient
 from ..llm.provider_base import Message
 from ..tools.registry import ToolContext, ToolRegistry
@@ -16,7 +17,8 @@ from .stopping import should_stop
 from .turn_budget import TurnBudget
 
 _ACTION_INSTRUCTION = (
-    "Respond with a single JSON object. To act: "
+    "Respond with exactly one JSON object and nothing else. Do not explain, "
+    "analyze, or use Markdown. To act: "
     '{"tool": "<name>", "args": {...}}. To stop: '
     '{"finish": true, "success": true|false}.'
 )
@@ -68,7 +70,11 @@ def run_agent(
             break
 
         state.turns += 1
-        response = llm.complete(_messages(state, issue, registry), max_tokens=16384)
+        try:
+            response = llm.complete(_messages(state, issue, registry), max_tokens=1024)
+        except LLMError:
+            state.stop_reason = "provider_error"
+            break
         action = parse_action(response.text)
 
         if action.kind == "finish":

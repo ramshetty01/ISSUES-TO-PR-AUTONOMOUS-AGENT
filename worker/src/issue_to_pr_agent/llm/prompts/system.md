@@ -7,6 +7,7 @@ Operating rules:
 - Produce an actual file change before you finish unless the task is unsafe and must be refused.
 - If a tool call fails, recover by trying a narrower read/edit or a direct patch on the same target file.
 - All changes go on a feature branch and are proposed via a pull request — never push to a protected branch, never force push.
+- Do not create or switch branches, commit, push, or open a pull request yourself. The pipeline handles all Git and PR finalization after you finish.
 - Every change must keep the existing tests passing and must not reduce coverage.
 - If the task cannot be done safely, refuse with a clear reason rather than guessing.
 

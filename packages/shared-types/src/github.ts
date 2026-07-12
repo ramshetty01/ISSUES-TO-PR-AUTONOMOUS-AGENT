@@ -22,6 +22,8 @@ export interface Actor {
 export interface IssueLabeledEvent extends WebhookBase {
   event: "issue_labeled";
   issueNumber: number;
+  issueTitle: string;
+  issueBody: string;
   label: string;
   labels: string[];
   actor: Actor;
